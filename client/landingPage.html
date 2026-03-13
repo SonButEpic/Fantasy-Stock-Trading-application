@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Stock Trading - Home</title>
+    <style>
+
+        body {
+            /* Margin 0 so backgrounds cover all of the screen */
+            margin: 0;
+            font-family: 'calibri';
+            /* Slight contrast on main body of landing page */
+            background-color: #e1e2e2;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 101;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            /* remove link modifications */
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-login {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-signup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-signup:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Container to manage the sidebar and content layout */
+        .page-wrapper {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Main content area */
+        .content-area {
+            flex: 1;
+        }
+
+        /* HERO SECTION (Introduction Part 1.1) */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 64px 32px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: #111827;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #4b5563;
+            max-width: 670px;
+            margin: 0 auto 32px;
+            line-height: 26px;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            padding: 12px 32px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-secondary {
+            padding: 12px 32px;
+            background-color: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* NEWS FEED (Boundary: NewsFeedBoundary - UC-13) */
+        .news-section {
+            background-color: #ffffff;
+            padding: 48px 32px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .news-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: box-shadow 0.3s;
+        }
+
+        .news-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-tag {
+            font-size: 12px;
+            font-weight: bold;
+            color: #3b82f6;
+            text-transform: uppercase;
+        }
+
+
+        .trending-sidebar {
+            width: 260px;
+            background-color: white;
+            border-left: 1px solid #e6e6e6;
+            /* Sticky makes sure it stays at the top of the window as you scroll */
+            position: sticky;
+            top: 0; 
+            height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
+
+        .ticker-placeholder {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .ticker-symbol {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .ticker-price {
+            font-weight: 600;
+            color: #10b981; 
+        }
+
+        /* SHRUNK FOOTER (Group 3 Info) */
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
+        }
+
+        .footer-text {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <!-- Create some genaric name like 'FantasyStock' -->
+        <a href="#" class="logo">Placeholder for name</a>
+        <div class="nav-links">
+            
+            <a href="#">Portfolio</a>
+            <a href="#">Tickers</a>
+            <a href="#">News</a>
+            <a href="#">Leagues</a>
+
+        </div>
+        <div class="auth-buttons">
+            
+            <button class="btn-signup">Create Account</button>
+            
+            <button class="btn-login">Log in</button>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="content-area">
+            
+            <header class="hero">
+                <h1>Welcoming statemenet. <span>w/ sum Pizazz.</span></h1>
+                <p>
+                    Experience our Fantasy Stock Trading application. Practice using virtual money 
+                    and simulated trades in a safe, competitive environment.
+                </p>
+                <div class="hero-actions">
+                    
+                    <button class="btn-primary">(placeholder, can be used later)</button>
+                    <button class="btn-secondary">(placeholder, can be used later)</button>
+                
+                </div>
+            </header>
+
+            <section class="news-section">
+                <div class="container">
+                    
+                    <h2 style="font-size: 24px;">Latest Market News</h2>
+                    <div class="news-grid">
+                        
+                        <article class="news-card">
+                            
+                            <span class="news-tag">(Type of news)</span>
+                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class="footer-text">Published by: whoever publish ts</div>
+
+                        </article>
+
+                        <article class="news-card">
+                            
+                            <span class="news-tag">(Type of news)</span>
+                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class="footer-text">Published by: whoever publish ts</div>
+
+                        </article>
+
+                        <article class="news-card">
+                            
+                            <span class="news-tag">(Type of news)</span>
+                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class="footer-text">Published by: whoever publish ts</div>
+
+                        </article>
+                        
+                        <article class="news-card">
+                            
+                            <span class="news-tag">(Type of news)</span>
+                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
+                            
+                            <div class="footer-text">Published by: whoever publish ts</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <aside class="trending-sidebar">
+            <div class="sidebar-header">Trending Tickers (placeholder for now)</div>
+            
+            <div class="ticker-placeholder">
+                <span class="ticker-symbol">AAPL</span>
+                <span class="ticker-price">$182.63 (+1.2%)</span>
+            </div>
+            <div class="ticker-placeholder">
+                <span class="ticker-symbol">TSLA</span>
+                <span class="ticker-price">$202.11 (+0.8%)</span>
+            </div>
+            <div class="ticker-placeholder">
+                <span class="ticker-symbol">NVDA</span>
+                <span class="ticker-price">$726.13 (+3.5%)</span>
+            </div>
+            <div class="ticker-placeholder">
+                <span class="ticker-symbol">MSFT</span>
+                <span class="ticker-price">$406.32 (+0.4%)</span>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p class="footer-text">CP317 Software Engineering — Winter 2026</p>
+        <p class="footer-text">Everyone will write their names down here when ts done ofn</p>
+    </footer>
+
+</body>
+</html>
