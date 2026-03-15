@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Stock Trading - Log In</title>
+    <style>
+
+        body {
+            /* Margin 0 so backgrounds cover all of the screen */
+            margin: 0;
+            font-family: 'calibri';
+            /* Slight contrast on main body of landing page */
+            background-color: #e1e2e2;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 101;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            /* remove link modifications */
+            text-decoration: none;
+        }
+
+        .navLinks {
+            display: flex;
+            gap: 24px;
+        }
+
+        .navLinks a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navLinks a:hover {
+            color: #2563eb;
+        }
+
+        .AuthenticatorButton {
+            display: flex;
+            gap: 16px;
+        }
+
+        .loginButton {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .buttonSignup:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Container to manage the layout */
+        .pageFixxerUpper {
+            display: flex;
+            flex: 1;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 32px;
+        }
+
+        .authenticationSegment {
+            display: flex;
+            flex-direction: row;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            /* Keeps the rounded corners intact with the blue background on the left */
+            overflow: hidden; 
+        }
+
+        .authenticationSementLeftSide {
+            flex: 1;
+            background-color: #2563eb;
+            color: white;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .authenticationSementLeftSide h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+
+        .authenticationSementLeftSide p {
+            font-size: 16px;
+            line-height: 24px;
+            color: #e0e7ff; 
+        }
+
+        .authenticationSementRightSide {
+            flex: 1.2;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .authenticationSementRightSide h2 {
+            font-size: 28px;
+            margin-bottom: 24px;
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .authenticationForm {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .formSegment {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .formSegment label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .formSegment input {
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'calibri';
+        }
+
+        .formSegment input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .submissionButton {
+            background-color: #2563eb;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .submissionButton:hover {
+            background-color: #1d4ed8;
+        }
+
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
+            margin-top: auto;
+        }
+
+        .footerText {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class = "navbar">
+        <!-- DONT FORGET TO CHANGE THE NAME ON THIS FILE TOO!!!!1 -->
+        <a href = "landingPage.html" class="logo">Placeholder for name</a>
+        <div class = "navLinks">
+            
+            <a href = "#">Portfolio</a>
+            <a href = "#">Tickers</a>
+            <a href = "#">News</a>
+            <a href = "#">Leagues</a>
+
+        </div>
+        <div class = "AuthenticatorButton">
+            
+            <button class = "buttonSignup" onclick="window.location.href = 'createAccount.html'">Create Account</button>
+            
+            
+            <button class = "loginButton" onclick="window.location.href = 'login.html'">Log in</button>
+        </div>
+    </nav>
+
+    <div class = "pageFixxerUpper">
+        <div class = "authenticationSegment">
+            
+            <div class = "authenticationSementLeftSide">
+                <h2>Welcome Back!</h2>
+                <p>
+                    Experience our Fantasy Stock Trading application. Practice using virtual money 
+                    and simulated trades in a safe, competitive environment without the real-world risk.
+                </p>
+            </div>
+
+            <div class = "authenticationSementRightSide">
+                <h2>Log in to your account</h2>
+                
+                <form class = "authenticationForm">
+                    
+                    <div class = "formSegment">
+
+                        <label for = "username">Enter username</label>
+                        <input type = "text" id = "username" placeholder = "Username" required>
+                        
+                    </div>
+                    
+                    <div class = "formSegment">
+
+                        <label for = "password">Enter password</label>
+                        <input type = "password" id = "password" placeholder = "********" required>
+
+                    </div>
+                    
+                    <button type = "submit" class = "submissionButton">Log in</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+
+        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class = "footerText">Everyone will write their names down here when ts done ofn</p>
+
+    </footer>
+
+</body>
+</html>

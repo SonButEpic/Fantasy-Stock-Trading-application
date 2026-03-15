@@ -38,28 +38,28 @@
             text-decoration: none;
         }
 
-        .nav-links {
+        .navLinks {
             display: flex;
             gap: 24px;
         }
 
-        .nav-links a {
+        .navLinks a {
             text-decoration: none;
             color: #4b5563;
             font-weight: 500;
             transition: color 0.2s;
         }
 
-        .nav-links a:hover {
+        .navLinks a:hover {
             color: #2563eb;
         }
 
-        .auth-buttons {
+        .AuthenticatorButton {
             display: flex;
             gap: 16px;
         }
 
-        .btn-login {
+        .loginButton {
             background: none;
             border: none;
             color: #2563eb;
@@ -68,7 +68,7 @@
             font-size: 16px;
         }
 
-        .btn-signup {
+        .buttonSignup {
             background-color: #2563eb;
             color: #ffffff;
             padding: 8px 20px;
@@ -80,42 +80,42 @@
             transition: background-color 0.2s;
         }
 
-        .btn-signup:hover {
+        .buttonSignup:hover {
             background-color: #1d4ed8;
         }
 
         /* Container to manage the sidebar and content layout */
-        .page-wrapper {
+        .pageFixxerUpper {
             display: flex;
             flex: 1;
             position: relative;
         }
 
         /* Main content area */
-        .content-area {
+        .mainAreaContainer {
             flex: 1;
         }
 
 
-        .hero {
+        .mainArea {
             max-width: 1200px;
             margin: 0 auto;
             padding: 64px 32px;
             text-align: center;
         }
 
-        .hero h1 {
+        .mainArea h1 {
             font-size: 48px;
             font-weight: 800;
             margin-bottom: 24px;
             color: #111827;
         }
 
-        .hero h1 span {
+        .mainArea h1 span {
             color: #2563eb;
         }
 
-        .hero p {
+        .mainArea p {
             font-size: 20px;
             color: #4b5563;
             max-width: 670px;
@@ -123,13 +123,13 @@
             line-height: 26px;
         }
 
-        .hero-actions {
+        .mainAreaSupreme {
             display: flex;
             justify-content: center;
             gap: 16px;
         }
 
-        .btn-primary {
+        .mainButton {
             padding: 12px 32px;
             background-color: #2563eb;
             color: white;
@@ -140,7 +140,7 @@
             font-size: 16px;
         }
 
-        .btn-secondary {
+        .secondaryButton {
             padding: 12px 32px;
             background-color: white;
             color: #374151;
@@ -151,7 +151,7 @@
             font-size: 16px;
         }
 
-        .news-section {
+        .newsArea {
             background-color: #ffffff;
             padding: 48px 32px;
         }
@@ -161,25 +161,25 @@
             margin: 0 auto;
         }
 
-        .news-grid {
+        .newsGrid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 32px;
             margin-top: 32px;
         }
 
-        .news-card {
+        .newsBubble {
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 24px;
             transition: box-shadow 0.3s;
         }
 
-        .news-card:hover {
+        .newsBubble:hover {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .news-tag {
+        .newsTag {
             font-size: 12px;
             font-weight: bold;
             color: #3b82f6;
@@ -187,7 +187,7 @@
         }
 
 
-        .trending-sidebar {
+        .trendingBar {
             width: 260px;
             background-color: white;
             border-left: 1px solid #e6e6e6;
@@ -200,7 +200,7 @@
             overflow-y: auto;
         }
 
-        .sidebar-header {
+        .sidebarHeader {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 16px;
@@ -208,7 +208,7 @@
             padding-bottom: 8px;
         }
 
-        .ticker-placeholder {
+        .tempTicker {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -216,12 +216,12 @@
             border-bottom: 1px solid #f9fafb;
         }
 
-        .ticker-symbol {
+        .tickerSymbol {
             font-weight: bold;
             color: #111827;
         }
 
-        .ticker-price {
+        .priceOfTicker {
             font-weight: 600;
             color: #10b981; 
         }
@@ -236,7 +236,7 @@
             z-index: 101;
         }
 
-        .footer-text {
+        .footerText {
             margin: 4px 0;
             font-size: 13px;
         }
@@ -247,111 +247,128 @@
 
     <nav class="navbar">
         <!-- Create some genaric name like 'FantasyStock' -->
-        <a href="#" class="logo">Placeholder for name</a>
-        <div class="nav-links">
+        <a href = "landingPage.html" class = "logo">Placeholder for name</a>
+        <div class="navLinks">
             
-            <a href="#">Portfolio</a>
-            <a href="#">Tickers</a>
-            <a href="#">News</a>
-            <a href="#">Leagues</a>
+            <a href = "#">Portfolio</a>
+            <a href = "#">Tickers</a>
+            <a href = "#">News</a>
+            <a href = "#">Leagues</a>
 
         </div>
-        <div class="auth-buttons">
+        <div class="AuthenticatorButton">
+            <button class = "buttonSignup" onclick="window.location.href='createAccount.html'">Create Account</button>
             
-            <button class="btn-signup">Create Account</button>
-            
-            <button class="btn-login">Log in</button>
+            <button class = "loginButton" onclick="window.location.href='login.html'">Log in</button>
         </div>
     </nav>
 
-    <div class="page-wrapper">
-        <div class="content-area">
+    <div class = "pageFixxerUpper">
+        <div class = "mainAreaContainer">
             
-            <header class="hero">
+            <header class = "mainArea">
+                <!-- not sure if we have a name or not so im leaving this blank for now -->
                 <h1>Welcoming statemenet. <span>w/ sum Pizazz.</span></h1>
                 <p>
                     Experience our Fantasy Stock Trading application. Practice using virtual money 
                     and simulated trades in a safe, competitive environment.
                 </p>
-                <div class="hero-actions">
+                <div class="mainAreaSupreme">
                     
-                    <button class="btn-primary">(placeholder, can be used later)</button>
-                    <button class="btn-secondary">(placeholder, can be used later)</button>
+                    <!-- simialr thing for these buttons. Can be like create account or sum since the user isnt logged in -->
+                    <button class = "mainButton">(placeholder, can be used later)</button>
+                    <button class = "secondaryButton">(placeholder, can be used later)</button>
                 
                 </div>
             </header>
 
-            <section class="news-section">
-                <div class="container">
+            <!-- all of these news nuggets are blank for now, can probs use fake ones to save time making the project -->
+            <section class = "newsArea">
+                <div class = "container">
                     
-                    <h2 style="font-size: 24px;">Latest Market News</h2>
-                    <div class="news-grid">
+                    <h2 style = "font-size: 24px;">Latest Market News</h2>
+                    <div class = "newsGrid">
                         
-                        <article class="news-card">
+                        <article class = "newsBubble">
                             
-                            <span class="news-tag">(Type of news)</span>
-                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
-                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
-                            <div class="footer-text">Published by: whoever publish ts</div>
+                            <span class = "newsTag">(Type of news)</span>
+                            <h3 style = "font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style = "font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class = "footerText">Published by: whoever publish ts</div>
 
                         </article>
 
-                        <article class="news-card">
+                        <article class = "newsBubble">
                             
-                            <span class="news-tag">(Type of news)</span>
-                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
-                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
-                            <div class="footer-text">Published by: whoever publish ts</div>
+                            <span class = "newsTag">(Type of news)</span>
+                            <h3 style = "font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style = "font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class = "footerText">Published by: whoever publish ts</div>
 
                         </article>
 
-                        <article class="news-card">
+                        <article class="newsBubble">
                             
-                            <span class="news-tag">(Type of news)</span>
-                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
-                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
-                            <div class="footer-text">Published by: whoever publish ts</div>
+                            <span class = "newsTag">(Type of news)</span>
+                            <h3 style = "font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style = "font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <div class = "footerText">Published by: whoever publish ts</div>
 
                         </article>
                         
-                        <article class="news-card">
+                        <article class = "newsBubble">
                             
-                            <span class="news-tag">(Type of news)</span>
-                            <h3 style="font-size: 18px; margin: 8px 0;">Title of news report</h3>
-                            <p style="font-size: 14px; line-height: 20px;">Description of news report</p>
+                            <span class = "newsTag">(Type of news)</span>
+                            <h3 style = "font-size: 18px; margin: 8px 0;">Title of news report</h3>
+                            <p style = "font-size: 14px; line-height: 20px;">Description of news report</p>
                             
-                            <div class="footer-text">Published by: whoever publish ts</div>
+                            <div class = "footerText">Published by: whoever publish ts</div>
                         </article>
                     </div>
                 </div>
             </section>
         </div>
 
-        <aside class="trending-sidebar">
-            <div class="sidebar-header">Trending Tickers (placeholder for now)</div>
+        <!-- simialr thing as the news, hardcode "trending" tickers to save time from actually using trending ones -->
+        <aside class = "trendingBar">
+            <div class = "sidebarHeader">Trending Tickers (placeholder for now)</div>
             
-            <div class="ticker-placeholder">
-                <span class="ticker-symbol">AAPL</span>
-                <span class="ticker-price">$182.63 (+1.2%)</span>
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">AAPL</span>
+                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
+
             </div>
-            <div class="ticker-placeholder">
-                <span class="ticker-symbol">TSLA</span>
-                <span class="ticker-price">$202.11 (+0.8%)</span>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">TSLA</span>
+                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
+
             </div>
-            <div class="ticker-placeholder">
-                <span class="ticker-symbol">NVDA</span>
-                <span class="ticker-price">$726.13 (+3.5%)</span>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">NVDA</span>
+                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
+
             </div>
-            <div class="ticker-placeholder">
-                <span class="ticker-symbol">MSFT</span>
-                <span class="ticker-price">$406.32 (+0.4%)</span>
+            
+            <div class="tempTicker">
+
+                <span class = "tickerSymbol">MSFT</span>
+                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
+
             </div>
+        
         </aside>
     </div>
 
     <footer>
-        <p class="footer-text">CP317 Software Engineering — Winter 2026</p>
-        <p class="footer-text">Everyone will write their names down here when ts done ofn</p>
+
+        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class = "footerText">Everyone will write their names down here when ts done ofn</p>
+        
     </footer>
 
 </body>
