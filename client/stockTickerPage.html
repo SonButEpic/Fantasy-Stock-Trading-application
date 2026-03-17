@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Stock Trading - Purchase</title>
+    
+<style>
+        body {
+            margin: 0;
+            font-family: 'calibri', sans-serif;
+            background-color: #e1e2e2;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* some weird formatting issues with the nav bar, but adding a min height of exactly 67px fixed it, hopefully doesnt mess with other formatting */
+            min-height: 67px; 
+            padding: 0 32px;
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 101;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            text-decoration: none;
+            min-width: 200px; 
+        }
+
+        .navLinks {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+            justify-content: center;
+            /* Fixed allignment on the nav bar with the removal of create an account and login since to make it to this page you haev to be logged in*/
+            margin-right: 248.5px;
+        }
+
+        .navLinks a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navLinks a:hover {
+            color: #2563eb;
+        }
+
+        .AuthenticatorButton {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            min-width: 200px;
+            justify-content: flex-end;
+        }
+
+        .loginButton {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .buttonSignup:hover {
+            background-color: #1d4ed8;
+        }
+
+        .purchaseContainer {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 64px 32px;
+        }
+
+        .purchaseCard {
+            background-color: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .cardHeader {
+            padding: 24px;
+            border-bottom: 1px solid #f3f4f6;
+            text-align: center;
+        }
+
+        .cardHeader h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .cardBody {
+            padding: 32px 24px;
+        }
+
+        .infoRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .label {
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        #unitPrice {
+            color: #10b981; 
+        }
+
+        .quantityInput {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-align: right;
+            font-family: 'calibri';
+            font-size: 16px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #f3f4f6;
+            margin: 24px 0;
+        }
+
+        .totalRow {
+            display: flex;
+            justify-content: space-between;
+            font-size: 22px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+
+        .cardFooter {
+            padding: 24px;
+            background-color: #f9fafb;
+            display: flex;
+            gap: 16px;
+        }
+
+        .button {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .buttonConfirm {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .buttonConfirm:hover {
+            background-color: #1d4ed8;
+        }
+
+        .buttonCancel {
+            background-color: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .buttonCancel:hover {
+            background-color: #f3f4f6;
+        }
+
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
+        }
+
+        .footerText {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <nav class="navbar">
+        <!-- Create some genaric name like 'FantasyStock', something corny like Fantastock (like fantastic idfk) -->
+        <a href = "landingPage.html" class = "logo">Placeholder for name</a>
+        <div class="navLinks">
+
+            <a href = "portfolioPage.html">Portfolio</a>
+            <a href = "stockTickerPage.html">Tickers</a>
+            <a href = "newsPage.html">News</a>
+            <a href = "leaguePage.html">Leagues</a>
+
+        </div>
+    </nav>
+
+
+</body>
+</html>
