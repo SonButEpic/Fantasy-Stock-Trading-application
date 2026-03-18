@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Stock Trading - Purchase</title>
-    
-<style>
+    <title>Fantasy Stock Trading - My Portfolio</title>
+    <style>
+        /* Base Styles */
         body {
             margin: 0;
             font-family: 'calibri', sans-serif;
@@ -20,15 +20,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            /* some weird formatting issues with the nav bar, but adding a min height of exactly 67px fixed it, hopefully doesnt mess with other formatting */
-            min-height: 67px; 
-            padding: 0 32px;
+            padding: 16px 32px;
             background-color: white;
             border-bottom: 1px solid #e6e6e6;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             position: relative;
             z-index: 101;
-            box-sizing: border-box;
         }
 
         .logo {
@@ -36,16 +33,11 @@
             font-weight: bold;
             color: #2563eb;
             text-decoration: none;
-            min-width: 200px; 
         }
 
         .navLinks {
             display: flex;
             gap: 24px;
-            flex: 1;
-            justify-content: center;
-            /* Fixed allignment on the nav bar with the removal of create an account and login since to make it to this page you haev to be logged in*/
-            margin-right: 248.5px;
         }
 
         .navLinks a {
@@ -62,9 +54,6 @@
         .AuthenticatorButton {
             display: flex;
             gap: 16px;
-            align-items: center;
-            min-width: 200px;
-            justify-content: flex-end;
         }
 
         .loginButton {
@@ -92,124 +81,163 @@
             background-color: #1d4ed8;
         }
 
-        .purchaseContainer {
+        .pageFixxerUpper {
+            display: flex;
             flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 64px 32px;
+            position: relative;
         }
 
-        .purchaseCard {
-            background-color: white;
-            width: 100%;
-            max-width: 450px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
+        .mainAreaContainer {
+            flex: 1;
         }
 
-        .cardHeader {
-            padding: 24px;
-            border-bottom: 1px solid #f3f4f6;
-            text-align: center;
+        /* Dashboard Headers */
+        .dashboardHeader {
+            max-width: 1000px;
+            margin: 0 auto 32px;
         }
 
-        .cardHeader h2 {
+        .dashboardHeader h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #111827;
             margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-            color: #111827;
         }
 
-        .cardBody {
-            padding: 32px 24px;
-        }
-
-        .infoRow {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        .label {
-            color: #4b5563;
-            font-weight: 500;
-        }
-
-        .value {
-            font-weight: bold;
-            color: #111827;
-        }
-
-        #unitPrice {
-            color: #10b981; 
-        }
-
-        .quantityInput {
-            width: 80px;
-            padding: 8px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            text-align: right;
-            font-family: 'calibri';
-            font-size: 16px;
-        }
-
-        .divider {
-            height: 1px;
-            background-color: #f3f4f6;
-            margin: 24px 0;
-        }
-
-        .totalRow {
-            display: flex;
-            justify-content: space-between;
-            font-size: 22px;
-            font-weight: 800;
+        .dashboardHeader span {
             color: #2563eb;
         }
 
-        .cardFooter {
-            padding: 24px;
-            background-color: #f9fafb;
-            display: flex;
-            gap: 16px;
+        /* Replaced inline style for the sub-header */
+        .holdingsSubHeader {
+            margin-bottom: 16px;
         }
 
-        .button {
-            flex: 1;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s;
-            border: none;
+        .holdingsSubHeader h2 {
+            font-size: 24px;
+            margin: 0;
         }
 
-        .buttonConfirm {
-            background-color: #2563eb;
-            color: white;
+        /* Summary Grid */
+        .summaryGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto 40px;
         }
 
-        .buttonConfirm:hover {
-            background-color: #1d4ed8;
-        }
-
-        .buttonCancel {
+        .statCard {
             background-color: white;
-            color: #374151;
-            border: 1px solid #d1d5db;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .buttonCancel:hover {
-            background-color: #f3f4f6;
+        .statLabel {
+            font-size: 14px;
+            font-weight: bold;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
 
+        .statValue {
+            font-size: 28px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .statValue.positive { color: #10b981; }
+
+        /* Holdings Table */
+        .holdingsArea {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            overflow: hidden;
+        }
+
+        .holdingsHeader {
+            background-color: #f9fafb;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e6e6e6;
+            font-weight: bold;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            color: #4b5563;
+        }
+
+        .holdingRow {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            align-items: center;
+        }
+
+        .holdingRow:last-child { border-bottom: none; }
+
+        .tickerName { font-weight: bold; color: #2563eb; }
+        
+        /* Replaced inline style for stock subtext */
+        .tickerFull {
+            color: #6b7280;
+            font-size: 0.85em;
+        }
+
+        .holdingPrice { 
+            font-weight: 600; 
+            text-align: right;
+        }
+
+        .priceAlignRight {
+            text-align: right;
+        }
+
+        /* Sidebar */
+        .trendingBar {
+            width: 260px;
+            background-color: white;
+            border-left: 1px solid #e6e6e6;
+            position: sticky;
+            top: 0; 
+            height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebarHeader {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
+
+        .tempTicker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .tickerSymbol {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .priceOfTicker {
+            font-weight: 600;
+            color: #10b981; 
+        }
+
+        /* Footer */
         footer {
             background-color: #111827;
             color: #9ca3af;
@@ -225,23 +253,181 @@
             font-size: 13px;
         }
     </style>
-    
 </head>
 <body>
 
     <nav class="navbar">
-        <!-- Create some genaric name like 'FantasyStock', something corny like Fantastock (like fantastic idfk) -->
         <a href = "landingPage.html" class = "logo">Placeholder for name</a>
         <div class="navLinks">
-
+            
             <a href = "portfolioPage.html">Portfolio</a>
             <a href = "stockTickerPage.html">Tickers</a>
             <a href = "newsPage.html">News</a>
-            <a href = "leaguePage.html">Leagues</a>
+            <a href = "leagueSelect.html">Leagues</a>
 
+        </div>
+        <div class="AuthenticatorButton">
+            <button class = "buttonSignup" onclick="window.location.href='createAccount.html'">Create Account</button>
+            
+            <button class = "loginButton" onclick="window.location.href='login.html'">Log in</button>
         </div>
     </nav>
 
+    <div class = "pageFixxerUpper">
+        <div class = "mainAreaContainer">
+            
+            <div class = "dashboardHeader">
+                <h1><span>Portfolio Performance</span></h1>
+            </div>
+
+
+            <!-- Stats rough rn but labeled them with ids to be later displayed dynamically -->
+            <div class="summaryGrid">
+                
+                <div class = "statCard">
+                    
+                    <div class = "statLabel">Total Balance</div>
+                    <div class = "statValue" id = "totalBalance">$10,000.00</div>
+
+                </div>
+                
+                <div class = "statCard">
+                    
+                    <div class = "statLabel">Buying Power</div>
+                    <div class = "statValue" id = "buyingPower">$2,450.00</div>
+
+                </div>
+                
+                <div class = "statCard">
+                    
+                    <div class = "statLabel">Total Return</div>
+                    <div class = "statValue positive" id = "totalReturn">+21.21%</div>
+
+                </div>
+            </div>
+
+            <div class = "dashboardHeader holdingsSubHeader">
+                
+                <h2>Current Holdings</h2>
+
+            </div>
+
+            <div class = "holdingsArea">
+                
+                <div class = "holdingsHeader">
+                    
+                    <div>Stock</div>
+                    <div>Shares</div>
+                    <div>Avg Price</div>
+                    <div class = "priceAlignRight">Total Value</div>
+
+                </div>
+
+                <!-- This container is the area where the users current holdings are displayed -->
+                <div id = "holdingsContainer">
+
+                    <!-- The commented section is how to create a new entry for when this is created dynamically later -->
+                    <!-- **START OF A NEW ENTRY** -->
+                    <div class = "holdingRow">
+                        <div>
+
+                            <span class = "tickerName">AAPL</span><br>
+                            <span class = "tickerFull">Apple Inc.</span>
+                            
+                        </div>
+
+                        <div>5</div>
+                        <div>$123.45</div>
+                        
+                        <div class = "holdingPrice">$123.45</div>
+                    </div>
+                    <!-- **END OF A NEW ENTRY** -->
+
+                    <div class = "holdingRow">
+                        <div>
+
+                            <span class = "tickerName">TSLA</span><br>
+                            <span class = "tickerFull">Tesla, Inc.</span>
+
+                        </div>
+                        
+                        <div>5</div>
+                        <div>$123.45</div>
+
+                        <div class = "holdingPrice">$123.45</div>
+                    </div>
+
+                    <div class = "holdingRow">
+                        <div>
+
+                            <span class = "tickerName">NVDA</span><br>
+                            <span class = "tickerFull">NVIDIA Corp.</span>
+
+                        </div>
+
+                        <div>5</div>
+                        <div>$123.45</div>
+                        
+                        <div class = "holdingPrice">$123.45</div>
+                    </div>
+
+                    <div class = "holdingRow">
+                        <div>
+
+                            <span class = "tickerName">MSFT</span><br>
+                            <span class = "tickerFull">Microsoft Corp.</span>
+
+                        </div>
+
+                        <div>5</div>
+                        <div>$123.45</div>
+
+                        <div class = "holdingPrice">$123.45</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aside class = "trendingBar">
+            <div class = "sidebarHeader">Trending Tickers (placeholder for now)</div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">AAPL</span>
+                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
+
+            </div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">TSLA</span>
+                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
+
+            </div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">NVDA</span>
+                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
+
+            </div>
+            
+            <div class="tempTicker">
+
+                <span class = "tickerSymbol">MSFT</span>
+                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
+
+            </div>
+        
+        </aside>
+    </div>
+
+    <footer>
+
+        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class = "footerText">Everyone will write their names down here when ts done ofn</p>
+
+    </footer>
 
 </body>
 </html>

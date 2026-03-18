@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Stock Trading - League Selection</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'calibri', sans-serif;
+            background-color: #e1e2e2;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 101;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .navLinks {
+            display: flex;
+            gap: 24px;
+        }
+
+        .navLinks a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navLinks a:hover {
+            color: #2563eb;
+        }
+
+        .AuthenticatorButton {
+            display: flex;
+            gap: 16px;
+        }
+
+        .loginButton {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .buttonSignup:hover {
+            background-color: #1d4ed8;
+        }
+
+        .pageFixxerUpper {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        .mainAreaContainer {
+            flex: 1;
+        }
+
+        .dashboardHeader {
+            max-width: 1000px;
+            margin: 0 auto 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+        }
+
+        .dashboardHeader h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+        }
+
+        .dashboardHeader span {
+            color: #2563eb;
+        }
+
+        .headerActions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .summaryGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto 40px;
+        }
+
+        .statCard {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .statLabel {
+            font-size: 14px;
+            font-weight: bold;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .trendingBar {
+            width: 260px;
+            background-color: white;
+            border-left: 1px solid #e6e6e6;
+            position: sticky;
+            top: 0; 
+            height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebarHeader {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
+
+        .tempTicker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .tickerSymbol {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .priceOfTicker {
+            font-weight: 600;
+            color: #10b981; 
+        }
+
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
+        }
+
+        .footerText {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+
+        .leagueCard {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .leagueCard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-color: #2563eb;
+        }
+
+        .leagueTitle {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .leagueMetric {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .leagueMetricLabel {
+            font-weight: bold;
+            color: #6b7280;
+        }
+
+        .leagueMetricValue {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .leagueInput {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 16px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .inputLabel {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4b5563;
+            display: block;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .cancel-btn {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .cancel-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        #errorMessage, #createErrorMessage {
+            color: #ef4444;
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .buttonSecondary {
+            background-color: #ffffff;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+            margin-right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href = "landingPage.html" class = "logo">Placeholder for name</a>
+        <div class="navLinks">
+            
+            <a href = "portfolioPage.html">Portfolio</a>
+            <a href = "stockTickerPage.html">Tickers</a>
+            <a href = "newsPage.html">News</a>
+            <a href = "leagueSelect.html">Leagues</a>
+
+        </div>
+        <div class = "AuthenticatorButton">
+            <button class = "buttonSignup" onclick = "window.location.href = 'createAccount.html'">Create Account</button>
+            
+            <button class = "loginButton" onclick = "window.location.href = 'login.html'">Log in</button>
+        </div>
+    </nav>
+
+    <div class = "pageFixxerUpper">
+        <div class = "mainAreaContainer">
+            
+            <div class = "dashboardHeader">
+                <h1>My Leagues</h1>
+
+                <div class = "headerActions">
+                    
+                    <button class = "buttonSignup buttonSecondary" onclick = "openCreateModal()">Create League</button>
+                    <button class = "buttonSignup" onclick = "openJoinModal()">Join League</button>
+                
+                </div>
+            </div>
+
+            <div id = "leaguesContent"></div>
+        </div>
+
+        <aside class = "trendingBar">
+            
+            <div class = "sidebarHeader">Trending Tickers</div>
+
+            <div class = "tempTicker"><span class = "tickerSymbol">AAPL</span><span class = "priceOfTicker">$182.63 (+1.2%)</span></div>
+            <div class = "tempTicker"><span class = "tickerSymbol">TSLA</span><span class = "priceOfTicker">$202.11 (+0.8%)</span></div>
+            <div class = "tempTicker"><span class = "tickerSymbol">NVDA</span><span class = "priceOfTicker">$726.13 (+3.5%)</span></div>
+            <div class = "tempTicker"><span class = "tickerSymbol">MSFT</span><span class = "priceOfTicker">$406.32 (+0.4%)</span></div>
+        
+        </aside>
+    </div>
+
+    <div class = "modal-overlay" id = "joinModal">
+        <div class = "modal-content">
+            <h2>Join a League</h2>
+            
+            <p>Enter the unique invite code to join a league.</p>
+            
+            <label class = "inputLabel">Invite Code</label>
+            
+            <input type = "text" id = "leagueCodeInput" class = "leagueInput" placeholder = "Ex: ABC-123">
+            
+            <div id = "errorMessage">Invalid code. Please try again.</div>
+            
+            <div class = "modal-actions">
+                
+                <button class = "buttonSignup cancel-btn" onclick = "closeModal('joinModal')">Cancel</button>
+                <button class = "buttonSignup" onclick = "submitJoinLeague()">Join</button>
+            
+            </div>
+        </div>
+    </div>
+
+    <div class = "modal-overlay" id = "createModal">
+        <div class = "modal-content" style = "width: 450px;">
+            <h2>Create New League</h2>
+            
+            <label class = "inputLabel">League Name</label>
+            
+            <input type = "text" id = "createLeagueName" class = "leagueInput" placeholder = "Name your league">
+
+            <label class="inputLabel">Starting Virtual Currency</label>
+            
+            <input type = "number" id = "createStartingCash" class = "leagueInput" placeholder = "100000">
+
+            <div style = "display: flex; gap: 16px;">
+                <div style = "flex: 1;">
+
+                    <label class = "inputLabel">Start Date</label>
+                    
+                    <input type = "date" id = "createStartDate" class = "leagueInput">
+                
+                </div>
+                <div style = "flex: 1;">
+
+                    <label class = "inputLabel">End Date</label>
+                    
+                    <input type = "date" id = "createEndDate" class = "leagueInput">
+                
+                </div>
+            </div>
+
+            <div id = "createErrorMessage">Please fill in all parameters.</div>
+            <div class = "modal-actions">
+
+                <button class = "buttonSignup cancel-btn" onclick = "closeModal('createModal')">Cancel</button>
+                <button class = "buttonSignup" onclick = "submitCreateLeague()">Create</button>
+            
+            </div>
+        </div>
+    </div>
+
+    <footer>
+
+        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class = "footerText">Everyone will write their names down here when ts done ofn</p>
+    
+    </footer>
+
+    <script>
+        // Data for user's current leagues, currently hardcoded jsut for display n shi
+        var userLeagues = [
+            { name: "myLeague1", rank: "3rd", members: 123, value: "$12,345.67" },
+            { name: "myLeague2", rank: "4th", members: 456, value: "$89,010.23" },
+            { name: "myLeague3", rank: "5th", members: 789, value: "$45,678.90" }
+        ];
+
+        // Fake database for codes to be tested what it would be like to join a league
+        var availableLeagues = [
+            { code: "123456", name: "test1 ", members: 12 },
+            { code: "234567", name: "test2", members: 34 },
+            { code: "345678", name: "test3", members: 56 }
+        ];
+
+        //Function to display leagues, more so important later if they are dynamically displayed per user
+        function renderLeagues() {
+            var container = document.getElementById('leaguesContent');
+            
+            //rebuild if the leagues exist
+            if (userLeagues.length > 0) {
+                let html = '<div class="summaryGrid">';
+                
+                    userLeagues.forEach(league => {
+                    html += `
+                        <div class = "statCard leagueCard" onclick = "window.location.href = 'leaguePage.html'">
+                            <div class = "statLabel">Current Rank: ${league.rank}</div>
+                            <div class = "leagueTitle">${league.name}</div>
+                            <div class = "leagueMetric">
+                                <span class = "leagueMetricLabel">Members</span>
+                                <span class = "leagueMetricValue">${league.members}</span>
+                            </div>
+                            <div class = "leagueMetric">
+                                <span class = "leagueMetricLabel">Portfolio Value</span>
+                                <span class = "leagueMetricValue positive">${league.value}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                //error message if no leagues are currently ongoing
+                container.innerHTML = `<div style = "text-align:center; padding: 40px;">No active leagues.</div>`;
+            }
+        }
+
+        //display the join league
+        function openJoinModal() {
+            document.getElementById('joinModal').style.display = 'flex';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        //display the create league
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'flex';
+            document.getElementById('createErrorMessage').style.display = 'none';
+        }
+
+        //hides the modal element specified
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        //validation function when a join code is used and adding the league to the users list
+        function submitJoinLeague() {
+            var code = document.getElementById('leagueCodeInput').value.trim();
+            var errorDiv = document.getElementById('errorMessage');
+            
+            //Checks if the entered code is in the mock database as of rn
+            var found = availableLeagues.find(l => l.code === code);
+
+            //if the code is found:
+            if (found) {
+                //add the league to the users viwe
+                userLeagues.push({
+                    name: found.name,
+                    rank: "N/A",
+                    members: found.members + 1,
+                    value: "$0.00"
+                });
+                renderLeagues();
+                closeModal('joinModal');
+            } else {
+                //error message
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        //function to make the actual league (like hwen creating)
+        function submitCreateLeague() {
+
+            var name = document.getElementById('createLeagueName').value.trim();
+            var cash = document.getElementById('createStartingCash').value;
+            var start = document.getElementById('createStartDate').value;
+            var end = document.getElementById('createEndDate').value;
+            var errorDiv = document.getElementById('createErrorMessage');
+
+            //quick if to check that all fields are filled in when submitted, if so then create the league object
+            if (name && cash && start && end) {
+                userLeagues.push({
+                    
+                    name: name,
+                    rank: "1st",
+                    members: 1,
+                    value: `$${parseFloat(cash).toLocaleString()}`
+                });
+                renderLeagues();
+                closeModal('createModal');
+            } else {
+                //quick error if anything in the if is missing
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        //render this once page is done loading
+        window.onload = renderLeagues;
+    </script>
+</body>
+</html>

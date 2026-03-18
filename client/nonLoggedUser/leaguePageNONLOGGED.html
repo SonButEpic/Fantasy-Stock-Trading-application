@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Stock Trading - Non User View</title>
+    <style>
+        
+        body {
+            margin: 0;
+            font-family: 'calibri', sans-serif;
+            background-color: #e1e2e2;
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 101;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            text-decoration: none;
+            min-width: 200px;
+        }
+
+        .navLinks {
+            display: flex;
+            gap: 24px;
+        }
+
+        .navLinks a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .navLinks a:hover {
+            color: #2563eb;
+        }
+
+        .AuthenticatorButton {
+            display: flex;
+            gap: 16px;
+        }
+
+        .loginButton {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .buttonSignup:hover {
+            background-color: #1d4ed8;
+        }
+
+        .pageFixxerUpper {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        .mainAreaContainer {
+            flex: 1;
+            /* made this jawn a lil different  to center the pls sign in stuff since a non signed in user can view*/
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .mainArea {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 64px 32px;
+            text-align: center;
+        }
+
+        .mainArea h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: #111827;
+        }
+
+        .mainArea h1 span {
+            color: #2563eb;
+        }
+
+        .mainArea p {
+            font-size: 20px;
+            color: #4b5563;
+            max-width: 670px;
+            margin: 0 auto 32px;
+            line-height: 26px;
+        }
+
+        .mainAreaSupreme {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .mainButton {
+            padding: 12px 32px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .mainButton:hover {
+            background-color: #1d4ed8;
+        }
+
+        .secondaryButton {
+            padding: 12px 32px;
+            background: none;
+            color: #2563eb;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .secondaryButton:hover {
+            text-decoration: underline;
+        }
+
+        .trendingBar {
+            width: 260px;
+            background-color: white;
+            border-left: 1px solid #e6e6e6;
+            position: sticky;
+            top: 0; 
+            height: 100vh;
+            padding: 24px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebarHeader {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
+
+        .tempTicker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .tickerSymbol {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .priceOfTicker {
+            font-weight: 600;
+            color: #10b981; 
+        }
+
+        footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
+        }
+
+        .footerText {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href = "landingPage.html" class = "logo">Placeholder for name</a>
+        <div class="navLinks">
+            
+            <a href = "portfolioPage.html">Portfolio</a>
+            <a href = "stockTickerPage.html">Tickers</a>
+            <a href = "newsPage.html">News</a>
+            <a href = "leagueSelect.html">Leagues</a>
+
+        </div>
+        <div class="AuthenticatorButton">
+            <button class = "buttonSignup" onclick="window.location.href='createAccount.html'">Create Account</button>
+            
+            <button class = "loginButton" onclick="window.location.href='login.html'">Log in</button>
+        </div>
+    </nav>
+
+    <div class="pageFixxerUpper">
+        <div class="mainAreaContainer">
+            
+            <header class="mainArea">
+                
+                <h1>Access Your <span>Leagues</span></h1>
+                <p>
+                    You need to be logged in to join, view, and manage your leagues.
+                </p>
+                <div class="mainAreaSupreme">
+                    
+                    <button class="mainButton" onclick="window.location.href='createAccount.html'">Create Account</button>
+                    <button class="secondaryButton" onclick="window.location.href='login.html'">Log In</button>
+                
+                </div>
+            </header>
+        </div>
+
+        <aside class = "trendingBar">
+            <div class = "sidebarHeader">Trending Tickers (placeholder for now)</div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">AAPL</span>
+                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
+
+            </div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">TSLA</span>
+                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
+
+            </div>
+            
+            <div class = "tempTicker">
+
+                <span class = "tickerSymbol">NVDA</span>
+                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
+
+            </div>
+            
+            <div class="tempTicker">
+
+                <span class = "tickerSymbol">MSFT</span>
+                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
+
+            </div>
+        
+        </aside>
+    </div>
+
+    <footer>
+        <p class="footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class="footerText">Everyone will write their names down here when ts done ofn</p>
+    </footer>
+
+</body>
+</html>
