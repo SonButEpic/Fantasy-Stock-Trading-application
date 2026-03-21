@@ -230,7 +230,6 @@
 <body>
 
     <nav class="navbar">
-        <!-- Create some genaric name like 'FantasyStock', something corny like Fantastock (like fantastic idfk) -->
         <a href = "landingPage.html" class = "logo">Placeholder for name</a>
         <div class="navLinks">
 
@@ -257,7 +256,7 @@
                 <div class = "infoRow">
 
                     <span class = "label">Stock Name:</span>
-                    <span class = "value" id = "stockName">Plceholder name</span>
+                    <span class = "value" id = "stockName">AAPL</span>
 
                 </div>
                 
@@ -282,7 +281,6 @@
 
                 <div class = "totalRow">
 
-                    <!-- NOTE!! THAT THE TOTLA IS ALSO HARDCODED HERE -->
                     <span>Total:</span>
                     <span id = "totalPrice">$123.45</span>
                 
@@ -292,7 +290,6 @@
             <div class = "cardFooter">
 
                 <button class = "button buttonConfirm" onclick = "alert('Trade Successful!')">Confirm</button>
-                <!-- made so it weill return to the last page the browser was on -->
                 <button class = "button buttonCancel" onclick = "window.history.back()">Cancel</button>
 
             </div>
@@ -307,10 +304,21 @@
     </footer>
 
     <script>
+        //snatch incoming quantity parameter on load and assign to a var
+        window.onload = function() {
+            var snatchTsTwin = new URLSearchParams(window.location.search);
+            var qty = snatchTsTwin.get('qty');
+            
+            if (qty) {
+                document.getElementById('quantity').value = qty;
+                myTotal();
+            }
+        };
+
         // Simple logic to make the page feel real for the demo
         function myTotal() {
-            
-            var price = 123.45; //hard coded for now bc it ill by dynamic based on the stock later
+            // Price updated to match AAPL in detailedTicker.html
+            var price = 123.45; 
             
             var qty = document.getElementById('quantity').value;
             

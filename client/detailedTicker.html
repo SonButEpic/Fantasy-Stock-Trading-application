@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Stock Trading - Market Tickers</title>
+    <title>Fantasy Stock Trading - Ticker Details</title>
     <style>
         body {
             margin: 0;
@@ -110,6 +110,15 @@
             color: #2563eb;
         }
 
+        .holdingsSubHeader {
+            margin-bottom: 16px;
+        }
+
+        .holdingsSubHeader h2 {
+            font-size: 24px;
+            margin: 0;
+        }
+
         .summaryGrid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -140,8 +149,19 @@
             color: #111827;
         }
 
-        .statValue.positive {
+        .positive {
             color: #10b981; 
+        }
+
+        .holdingsArea {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            overflow: hidden;
+            padding: 32px;
+            box-sizing: border-box;
         }
 
         .trendingBar {
@@ -197,45 +217,27 @@
             font-size: 13px;
         }
 
-        .leagueCard {
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        .emptyStateContainer {
+            text-align: center;
+            margin-bottom: 24px;
         }
 
-        .leagueCard:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-color: #2563eb;
-        }
-
-        .leagueTitle {
-            font-size: 22px;
-            font-weight: 800;
+        .emptyStateContainer h2 {
+            font-size: 24px;
             color: #111827;
-            margin-bottom: 16px;
+            margin: 0 0 12px 0;
         }
 
-        .leagueMetric {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-
-        .leagueMetricLabel {
-            font-weight: bold;
+        .emptyStateContainer p {
             color: #6b7280;
-        }
-
-        .leagueMetricValue {
-            font-weight: 600;
-            color: #111827;
+            margin: 0;
+            font-size: 16px;
         }
 
         .leagueInput {
             width: 100%;
             padding: 12px;
-            margin: 8px 0 16px 0;
+            margin: 0;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             box-sizing: border-box;
@@ -243,13 +245,20 @@
             font-family: inherit;
         }
 
+        .buttonSecondary {
+            background-color: #ffffff;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
 
-    <nav class = "navbar">
-        <a href = "landingPage.html" class="logo">Placeholder for name</a>
-        <div class = "navLinks">
+    <nav class="navbar">
+        <a href = "landingPage.html" class = "logo">Placeholder for name</a>
+        <div class="navLinks">
             
             <a href = "portfolioPage.html">Portfolio</a>
             <a href = "stockTickerPage.html">Tickers</a>
@@ -258,10 +267,9 @@
 
         </div>
         <div class = "AuthenticatorButton">
+            <button class = "buttonSignup" onclick = "window.location.href = 'createAccount.html'">Create Account</button>
             
-            <button class = "buttonSignup" onclick="window.location.href = 'createAccount.html'">Create Account</button>
-            <button class = "loginButton" onclick="window.location.href = 'login.html'">Log in</button>
-
+            <button class = "loginButton" onclick = "window.location.href = 'login.html'">Log in</button>
         </div>
     </nav>
 
@@ -269,103 +277,88 @@
         <div class = "mainAreaContainer">
             
             <div class = "dashboardHeader">
+                <h1>AAPL <span>Apple Inc.</span></h1>
+            </div>
 
-                <h1>Market <span>Tickers</span></h1>
+            <div class = "holdingsArea">
+                
+                <h2 style = "margin-top: 0; font-size: 32px; color: #111827;">$123.45 <span class = "positive" style = "font-size: 18px; margin-left: 8px;">+1.2%</span></h2>
+
+                <div class = "emptyStateContainer">
+                    
+                    <h2>*Interactive Stock Chart*</h2>
+                    <p>Historical price data visualization will go here</p>
+
+                </div>
+
+                <div style = "display: flex; justify-content: center; gap: 12px;">
+                    
+                    <button class = "buttonSignup buttonSecondary">1D</button>
+                    <button class = "buttonSignup buttonSecondary">1W</button>
+                    <button class = "buttonSignup buttonSecondary">1M</button>
+                    <button class = "buttonSignup buttonSecondary">1Y</button>
+                    <button class = "buttonSignup buttonSecondary">ALL</button>
+
+                </div>
 
             </div>
 
-            <div style = "max-width: 1000px; margin: 0 auto 32px;">
-
-                <input type = "text" id = "tickerSearch" class = "leagueInput" placeholder=  "Search by ticker symbol or company name...">
+            <div class = "dashboardHeader holdingsSubHeader">
+                
+                <h2>Trade AAPL</h2>
 
             </div>
 
-            <div class = "summaryGrid" id = "tickerGrid">
+            <div class = "statCard" style = "max-width: 1000px; margin: 0 auto 40px; display: flex; align-items: center; gap: 16px;">
                 
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
+                <input type = "number" id="tradeQuantity" class = "leagueInput" placeholder = "Quantity" style = "max-width: 200px;">
+                
+                <button class = "buttonSignup" style = "background-color: #10b981;" onclick="goToPurchase()">Buy Shares</button>
+                <button class = "buttonSignup buttonSecondary" style = "color: #ef4444; border-color: #ef4444;">Sell Shares</button>
 
-                    <div class = "statLabel">Apple Inc.</div>
-                    <div class = "leagueTitle">AAPL</div>
+            </div>
+
+            <div class = "dashboardHeader holdingsSubHeader">
+                
+                <h2>Key Statistics</h2>
+
+            </div>
+
+            <div class="summaryGrid">
+                
+                <div class = "statCard">
                     
+                    <div class = "statLabel">Market Cap</div>
+                    <div class = "statValue" style = "font-size: 24px;">$2.8T</div>
 
-                    <div class = "leagueMetric">
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$182.63</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+1.2%</span>
-
-                    </div>
                 </div>
                 
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">Tesla, Inc.</div>
+                <div class = "statCard">
                     
-                    <div class = "leagueTitle">TSLA</div>
-                    
-                    <div class = "leagueMetric">
+                    <div class = "statLabel">Volume</div>
+                    <div class = "statValue" style = "font-size: 24px;">52.4M</div>
 
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$202.11</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+0.8%</span>
-                    </div>
                 </div>
                 
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">NVIDIA Corp.</div>
-                    <div class = "leagueTitle">NVDA</div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$726.13</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+3.5%</span>
-
-                    </div>
-                </div>
-
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">Microsoft Corp.</div>
-                    <div class = "leagueTitle">MSFT</div>
+                <div class = "statCard">
                     
-                    <div class = "leagueMetric">
+                    <div class = "statLabel">52 Week High</div>
+                    <div class = "statValue" style = "font-size: 24px;">$198.23</div>
 
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$406.32</span>
+                </div>
+                
+                <div class = "statCard">
+                    
+                    <div class = "statLabel">52 Week Low</div>
+                    <div class = "statValue" style = "font-size: 24px;">$165.67</div>
 
-                    </div>
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+0.4%</span>
-
-                    </div>
                 </div>
             </div>
 
         </div>
 
         <aside class = "trendingBar">
-            <div class = "sidebarHeader">Trending Tickers (placeholder for now)</div>
+            <div class = "sidebarHeader">Trending Tickers</div>
             
             <div class = "tempTicker">
 
@@ -401,32 +394,23 @@
     <footer>
 
         <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
-        <p class = "footerText">Everyone will write their names down here when it's done</p>
+        <p class = "footerText">Everyone will write their names down here when ts done ofn</p>
 
     </footer>
 
     <script>
-        //event listener that listens for when the user types
-        document.getElementById('tickerSearch').addEventListener('input', function(e) {
-            var searchTerm = e.target.value.toLowerCase();
-            //this selects the tickers in the grid
-            var cards = document.querySelectorAll('#tickerGrid .leagueCard');
-
-            //iterate throguh each ticker determining if it should be shown or not
-            cards.forEach(card => {
-                //get these 2 and make lowercase to check w the search term
-                var companyName = card.querySelector('.statLabel').textContent.toLowerCase();
-                var tickerSymbol = card.querySelector('.leagueTitle').textContent.toLowerCase();
-
-                //if either name or ticker symbol have thew search term display, else, dont
-                if (companyName.includes(searchTerm) || tickerSymbol.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } 
-                else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+        function goToPurchase() {
+            var qty = document.getElementById('tradeQuantity').value;
+            
+            if (qty > 0) {
+                //pass the qty to the purchase page through url parameter (this is snatchTsTwin in purchasePage.html)
+                window.location.href = 'purchasePage.html?qty=' + qty;
+            } 
+            else {
+                //aint no way you entered 0
+                alert("Please enter a valid quantity.");
+            }
+        }
     </script>
 
 </body>
