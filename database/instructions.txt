@@ -1,0 +1,5 @@
+1. connect with "ssh -L 3307:localhost:3306 dbuser@72.39.91.7"
+2. password for dbuser: abc123
+3. connect to mysql through localhost on port 3307
+4. username: dbuser
+5. password: abc123
