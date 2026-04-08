@@ -37,6 +37,36 @@ function createError(message) {
     return { success: false, message };
 }
 
+async function ensureIndividualPortfolio(userID) {
+    const [existing] = await pool.execute(
+        `SELECT portfolioID, userID, leagueID, cashBalance, createdDate
+         FROM Portfolio
+         WHERE userID = ? AND leagueID IS NULL
+         ORDER BY portfolioID DESC
+         LIMIT 1`,
+        [userID]
+    );
+
+    if (existing.length > 0) {
+        return existing[0];
+    }
+
+    const startingCash = 10000;
+    const [result] = await pool.execute(
+        `INSERT INTO Portfolio (userID, leagueID, cashBalance, portfolioType, createdDate)
+         VALUES (?, NULL, ?, 'Individual', CURDATE())`,
+        [userID, startingCash]
+    );
+
+    return {
+        portfolioID: result.insertId,
+        userID,
+        leagueID: null,
+        cashBalance: startingCash,
+        createdDate: new Date(),
+    };
+}
+
 app.use(express.json());
 
 // FIXED: Use the resolved clientPath for static files
@@ -104,6 +134,119 @@ app.post('/api/auth/login', async (req, res) => {
     } catch (error) {
         console.error('Login error:', error);
         return res.status(500).json(createError('Unable to verify login.'));
+    }
+});
+
+app.get('/api/portfolio/individual', async (req, res) => {
+    const username = (req.query.username || '').trim();
+    if (!username) {
+        return res.status(400).json(createError('username is required'));
+    }
+
+    try {
+        const [users] = await pool.execute(
+            'SELECT userID, username FROM `User` WHERE username = ?',
+            [username]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json(createError('User not found.'));
+        }
+
+        const user = users[0];
+        const portfolio = await ensureIndividualPortfolio(user.userID);
+
+        const [holdings] = await pool.execute(
+            `SELECT
+                h.tickerSymbol,
+                COALESCE(s.companyName, h.tickerSymbol) AS companyName,
+                h.quantity,
+                h.purchasePrice AS avgPrice,
+                COALESCE(s.currentPrice, h.purchasePrice) AS currentPrice
+             FROM Holding h
+             LEFT JOIN Stock s ON s.tickerSymbol = h.tickerSymbol
+             WHERE h.portfolioID = ?
+             ORDER BY h.tickerSymbol ASC`,
+            [portfolio.portfolioID]
+        );
+
+        const [transactions] = await pool.execute(
+            `SELECT
+                transactionID,
+                tickerSymbol,
+                transactionType,
+                quantity,
+                pricePerShare,
+                totalPrice,
+                transactionDate,
+                status
+             FROM Transaction
+             WHERE portfolioID = ?
+             ORDER BY transactionDate DESC, transactionID DESC`,
+            [portfolio.portfolioID]
+        );
+
+        let holdingsMarketValue = 0;
+        let holdingsCostBasis = 0;
+
+        const holdingsSnapshot = holdings.map((holding) => {
+            const quantity = Number(holding.quantity) || 0;
+            const avgPrice = Number(holding.avgPrice) || 0;
+            const currentPrice = Number(holding.currentPrice) || 0;
+            const marketValue = quantity * currentPrice;
+            const costBasis = quantity * avgPrice;
+
+            holdingsMarketValue += marketValue;
+            holdingsCostBasis += costBasis;
+
+            return {
+                tickerSymbol: holding.tickerSymbol,
+                companyName: holding.companyName,
+                quantity,
+                avgPrice,
+                currentPrice,
+                marketValue,
+                costBasis,
+            };
+        });
+
+        const txSnapshot = transactions.map((tx) => ({
+            transactionID: tx.transactionID,
+            tickerSymbol: tx.tickerSymbol,
+            transactionType: tx.transactionType,
+            quantity: Number(tx.quantity) || 0,
+            pricePerShare: Number(tx.pricePerShare) || 0,
+            totalPrice: Number(tx.totalPrice) || 0,
+            transactionDate: tx.transactionDate,
+            status: Boolean(tx.status),
+        }));
+
+        const cashBalance = Number(portfolio.cashBalance) || 0;
+        const portfolioValue = cashBalance + holdingsMarketValue;
+        const initialCash = 10000;
+        const performancePct = ((portfolioValue - initialCash) / initialCash) * 100;
+
+        return res.json({
+            success: true,
+            portfolio: {
+                portfolioId: portfolio.portfolioID,
+                userId: user.userID,
+                username: user.username,
+                scope: 'individual',
+                createdDate: portfolio.createdDate,
+                cashBalance,
+                currentMarketValue: holdingsMarketValue,
+                holdingsCostBasis,
+                portfolioValue,
+                initialCash,
+                performancePct,
+                holdings: holdingsSnapshot,
+                transactions: txSnapshot,
+            },
+        });
+    } catch (error) {
+        console.error('Individual portfolio fetch error:', error);
+        return res.status(500).json(createError('Unable to load individual portfolio.'));
     }
 });
 
