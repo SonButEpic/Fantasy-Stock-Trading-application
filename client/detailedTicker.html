@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fantasy Stock Trading - Ticker Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             margin: 0;
@@ -50,36 +51,6 @@
             color: #2563eb;
         }
 
-        .AuthenticatorButton {
-            display: flex;
-            gap: 16px;
-        }
-
-        .loginButton {
-            background: none;
-            border: none;
-            color: #2563eb;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .buttonSignup {
-            background-color: #2563eb;
-            color: #ffffff;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-
-        .buttonSignup:hover {
-            background-color: #1d4ed8;
-        }
-
         .pageFixxerUpper {
             display: flex;
             flex: 1;
@@ -110,13 +81,14 @@
             color: #2563eb;
         }
 
-        .holdingsSubHeader {
-            margin-bottom: 16px;
-        }
-
-        .holdingsSubHeader h2 {
-            font-size: 24px;
-            margin: 0;
+        .holdingsArea {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            padding: 32px;
+            box-sizing: border-box;
         }
 
         .summaryGrid {
@@ -144,25 +116,13 @@
         }
 
         .statValue {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 800;
             color: #111827;
         }
 
-        .positive {
-            color: #10b981; 
-        }
-
-        .holdingsArea {
-            max-width: 1000px;
-            margin: 0 auto 40px;
-            background-color: white;
-            border-radius: 12px;
-            border: 1px solid #e6e6e6;
-            overflow: hidden;
-            padding: 32px;
-            box-sizing: border-box;
-        }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
 
         .trendingBar {
             width: 260px;
@@ -192,66 +152,45 @@
             border-bottom: 1px solid #f9fafb;
         }
 
-        .tickerSymbol {
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .priceOfTicker {
-            font-weight: 600;
-            color: #10b981; 
-        }
-
         footer {
             background-color: #111827;
             color: #9ca3af;
             padding: 24px 32px;
             text-align: center;
             border-top: 1px solid #374151;
-            position: relative;
-            z-index: 101;
         }
 
-        .footerText {
-            margin: 4px 0;
-            font-size: 13px;
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .emptyStateContainer {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .emptyStateContainer h2 {
-            font-size: 24px;
-            color: #111827;
-            margin: 0 0 12px 0;
-        }
-
-        .emptyStateContainer p {
-            color: #6b7280;
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .leagueInput {
-            width: 100%;
-            padding: 12px;
-            margin: 0;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-            font-family: inherit;
-        }
+        .buttonSignup:hover { background-color: #1d4ed8; }
 
         .buttonSecondary {
             background-color: #ffffff;
             color: #2563eb;
             border: 1px solid #2563eb;
-            margin-right: 10px;
         }
 
+        .buttonSecondary:active, .buttonSecondary.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .leagueInput {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -268,145 +207,192 @@
     </nav>
     <script src="auth.js"></script>
 
-    <div class = "pageFixxerUpper">
-        <div class = "mainAreaContainer">
+    <div class="pageFixxerUpper">
+        <div class="mainAreaContainer">
             
-            <div class = "dashboardHeader">
-                <h1>AAPL <span>Apple Inc.</span></h1>
+            <div class="dashboardHeader">
+                <h1><span id="displaySymbol">---</span> <span id="companyName">Loading...</span></h1>
             </div>
 
-            <div class = "holdingsArea">
-                
-                <h2 style = "margin-top: 0; font-size: 32px; color: #111827;">$123.45 <span class = "positive" style = "font-size: 18px; margin-left: 8px;">+1.2%</span></h2>
+            <div class="holdingsArea">
+                <h2 style="margin-top: 0; font-size: 32px; color: #111827;">
+                    $<span id="currentPrice">0.00</span> 
+                    <span id="priceChange" class="positive" style="font-size: 18px; margin-left: 8px;">+0.00%</span>
+                </h2>
 
-                <div class = "emptyStateContainer">
-                    
-                    <h2>*Interactive Stock Chart*</h2>
-                    <p>Historical price data visualization will go here</p>
-
+                <div class="chartContainer" style="position: relative; height:45vh; width:100%; margin-bottom: 24px;">
+                    <canvas id="stockHistoryChart"></canvas>
                 </div>
 
-                <div style = "display: flex; justify-content: center; gap: 12px;">
-                    
-                    <button class = "buttonSignup buttonSecondary">1D</button>
-                    <button class = "buttonSignup buttonSecondary">1W</button>
-                    <button class = "buttonSignup buttonSecondary">1M</button>
-                    <button class = "buttonSignup buttonSecondary">1Y</button>
-                    <button class = "buttonSignup buttonSecondary">ALL</button>
-
+                <div style="display: flex; justify-content: center; gap: 12px;">
+                    <button class="buttonSignup buttonSecondary range-btn">1D</button>
+                    <button class="buttonSignup buttonSecondary range-btn">1W</button>
+                    <button class="buttonSignup buttonSecondary range-btn active">1M</button>
+                    <button class="buttonSignup buttonSecondary range-btn">1Y</button>
+                    <button class="buttonSignup buttonSecondary range-btn">ALL</button>
                 </div>
-
             </div>
 
-            <div class = "dashboardHeader holdingsSubHeader">
-                
-                <h2>Trade AAPL</h2>
-
+            <div class="dashboardHeader">
+                <h2 id="tradeHeader">Trade ---</h2>
             </div>
 
-            <div class = "statCard" style = "max-width: 1000px; margin: 0 auto 40px; display: flex; align-items: center; gap: 16px;">
-                
-                <input type = "number" id="tradeQuantity" class = "leagueInput" placeholder = "Quantity" style = "max-width: 200px;">
-                
-                <button class = "buttonSignup" style = "background-color: #10b981;" onclick="goToPurchase()">Buy Shares</button>
-                <button class = "buttonSignup buttonSecondary" style = "color: #ef4444; border-color: #ef4444;">Sell Shares</button>
-
+            <div class="statCard" style="max-width: 1000px; margin: 0 auto 40px; display: flex; align-items: center; gap: 16px;">
+                <input type="number" id="tradeQuantity" class="leagueInput" placeholder="Quantity" style="max-width: 200px;">
+                <button class="buttonSignup" style="background-color: #10b981;" onclick="goToPurchase()">Buy Shares</button>
+                <button class="buttonSignup buttonSecondary" style="color: #ef4444; border-color: #ef4444;">Sell Shares</button>
             </div>
 
-            <div class = "dashboardHeader holdingsSubHeader">
-                
+            <div class="dashboardHeader">
                 <h2>Key Statistics</h2>
-
             </div>
 
             <div class="summaryGrid">
-                
-                <div class = "statCard">
-                    
-                    <div class = "statLabel">Market Cap</div>
-                    <div class = "statValue" style = "font-size: 24px;">$2.8T</div>
-
+                <div class="statCard">
+                    <div class="statLabel">Volume</div>
+                    <div id="statVolume" class="statValue">---</div>
                 </div>
-                
-                <div class = "statCard">
-                    
-                    <div class = "statLabel">Volume</div>
-                    <div class = "statValue" style = "font-size: 24px;">52.4M</div>
-
+                <div class="statCard">
+                    <div class="statLabel">Open Price</div>
+                    <div id="statOpen" class="statValue">---</div>
                 </div>
-                
-                <div class = "statCard">
-                    
-                    <div class = "statLabel">52 Week High</div>
-                    <div class = "statValue" style = "font-size: 24px;">$198.23</div>
-
+                <div class="statCard">
+                    <div class="statLabel">Daily High</div>
+                    <div id="statHigh" class="statValue">---</div>
                 </div>
-                
-                <div class = "statCard">
-                    
-                    <div class = "statLabel">52 Week Low</div>
-                    <div class = "statValue" style = "font-size: 24px;">$165.67</div>
-
+                <div class="statCard">
+                    <div class="statLabel">Daily Low</div>
+                    <div id="statLow" class="statValue">---</div>
                 </div>
             </div>
-
         </div>
 
-        <aside class = "trendingBar">
-            <div class = "sidebarHeader">Trending Tickers</div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">AAPL</span>
-                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">TSLA</span>
-                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">NVDA</span>
-                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
-
-            </div>
-            
-            <div class="tempTicker">
-
-                <span class = "tickerSymbol">MSFT</span>
-                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
-
-            </div>
-        
+        <aside class="trendingBar">
+            <div class="sidebarHeader">Trending Tickers</div>
+            <div class="tempTicker"><span class="tickerSymbol">AAPL</span><span class="priceOfTicker">$182.63 (+1.2%)</span></div>
+            <div class="tempTicker"><span class="tickerSymbol">TSLA</span><span class="priceOfTicker">$202.11 (+0.8%)</span></div>
+            <div class="tempTicker"><span class="tickerSymbol">NVDA</span><span class="priceOfTicker">$726.13 (+3.5%)</span></div>
+            <div class="tempTicker"><span class="tickerSymbol">MSFT</span><span class="priceOfTicker">$406.32 (+0.4%)</span></div>
         </aside>
     </div>
 
     <footer>
-
-        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
-        <p class = "footerText">Chrisitan Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
-
+        <p class="footerText">CP317 Software Engineering — Winter 2026</p>
     </footer>
 
     <script>
-        function goToPurchase() {
-            var qty = document.getElementById('tradeQuantity').value;
-            
-            if (qty > 0) {
-                //pass the qty to the purchase page through url parameter (this is snatchTsTwin in purchasePage.html)
-                window.location.href = 'purchasePage.html?qty=' + qty;
-            } 
-            else {
-                //aint no way you entered 0
-                alert("Please enter a valid quantity.");
+        const urlParams = new URLSearchParams(window.location.search);
+        const symbol = urlParams.get('symbol')?.toUpperCase() || 'AAPL';
+        
+        // REPLACE WITH YOUR KEY
+        const API_KEY = 'ed2d5fcefdee42e7bd18e9bab65f0aa1'; 
+
+        let myChart = null;
+
+        const timeRanges = {
+            '1D': { interval: '5min', outputsize: 78 },
+            '1W': { interval: '30min', outputsize: 65 },
+            '1M': { interval: '1day', outputsize: 30 },
+            '1Y': { interval: '1day', outputsize: 252 },
+            'ALL': { interval: '1month', outputsize: 120 }
+        };
+
+        async function fetchWithError(url) {
+            const res = await fetch(url);
+            if (res.status === 429) throw new Error("Minute limit reached (8/min).");
+            const data = await res.json();
+            if (data.status === "error") throw new Error(data.message);
+            return data;
+        }
+
+        async function loadTickerDetails() {
+            try {
+                const quoteData = await fetchWithError(`https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${API_KEY}`);
+                
+                document.getElementById('displaySymbol').textContent = symbol;
+                document.getElementById('companyName').textContent = quoteData.name || "";
+                document.getElementById('tradeHeader').textContent = `Trade ${symbol}`;
+                
+                const price = parseFloat(quoteData.close || quoteData.price || 0);
+                document.getElementById('currentPrice').textContent = price.toFixed(2);
+                
+                const change = parseFloat(quoteData.percent_change || 0);
+                const changeEl = document.getElementById('priceChange');
+                changeEl.textContent = (change >= 0 ? "+" : "") + change.toFixed(2) + "%";
+                changeEl.className = change >= 0 ? "positive" : "negative";
+
+                document.getElementById('statVolume').textContent = parseInt(quoteData.volume || 0).toLocaleString();
+                document.getElementById('statOpen').textContent = "$" + parseFloat(quoteData.open || 0).toFixed(2);
+                document.getElementById('statHigh').textContent = "$" + parseFloat(quoteData.high || 0).toFixed(2);
+                document.getElementById('statLow').textContent = "$" + parseFloat(quoteData.low || 0).toFixed(2);
+
+                updateChart('1M'); // Initial chart load
+            } catch (err) {
+                document.getElementById('companyName').textContent = err.message;
             }
         }
-    </script>
 
+        async function updateChart(rangeKey) {
+            try {
+                const config = timeRanges[rangeKey];
+                const data = await fetchWithError(`https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${config.interval}&outputsize=${config.outputsize}&apikey=${API_KEY}`);
+
+                const values = data.values; 
+                const dates = values.map(v => v.datetime).reverse();
+                const prices = values.map(v => parseFloat(v.close)).reverse();
+                
+                const chartColor = prices[prices.length - 1] >= prices[0] ? '#10b981' : '#ef4444';
+                const ctx = document.getElementById('stockHistoryChart').getContext('2d');
+
+                if (myChart) myChart.destroy();
+
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            data: prices,
+                            borderColor: chartColor,
+                            backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                            fill: true,
+                            tension: 0.2,
+                            pointRadius: rangeKey === '1D' || rangeKey === '1W' ? 0 : 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { position: 'right', ticks: { callback: val => '$' + val } }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.warn(err.message);
+            }
+        }
+
+        // Setup Buttons
+        document.querySelectorAll('.range-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                updateChart(e.target.textContent);
+            });
+        });
+
+        function goToPurchase() {
+            const qty = document.getElementById('tradeQuantity').value;
+            if (qty > 0) {
+                window.location.href = `purchasePage.html?symbol=${symbol}&qty=${qty}`;
+            } else {
+                alert("Enter a valid amount of shares.");
+            }
+        }
+
+        loadTickerDetails();
+    </script>
 </body>
 </html>

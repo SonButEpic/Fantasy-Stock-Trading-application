@@ -3,35 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Stock Trading - Market Tickers</title>
+    <title>FantaStock - Market Tickers</title>
     <style>
         body {
             margin: 0;
-            font-family: 'calibri', sans-serif;
-            background-color: #e1e2e2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
             color: #1f2937;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
+        /* Navigation */
         .navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 16px 32px;
             background-color: white;
-            border-bottom: 1px solid #e6e6e6;
+            border-bottom: 1px solid #e5e7eb;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            position: relative;
-            z-index: 101;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .logo {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 800;
             color: #2563eb;
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
         .navLinks {
@@ -42,7 +45,7 @@
         .navLinks a {
             text-decoration: none;
             color: #4b5563;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.2s;
         }
 
@@ -50,199 +53,138 @@
             color: #2563eb;
         }
 
-        .AuthenticatorButton {
-            display: flex;
-            gap: 16px;
-        }
-
-        .loginButton {
-            background: none;
-            border: none;
-            color: #2563eb;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .buttonSignup {
-            background-color: #2563eb;
-            color: #ffffff;
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-
-        .buttonSignup:hover {
-            background-color: #1d4ed8;
-        }
-
-        .pageFixxerUpper {
+        /* Layout */
+        .pageContainer {
             display: flex;
             flex: 1;
-            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .mainAreaContainer {
+        .mainContent {
             flex: 1;
-        }
-
-        .dashboardHeader {
-            max-width: 1000px;
-            margin: 0 auto 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 24px;
+            padding: 32px;
         }
 
         .dashboardHeader h1 {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 800;
-            color: #111827;
-            margin: 0;
+            margin: 0 0 24px 0;
         }
 
-        .dashboardHeader span {
-            color: #2563eb;
+        .dashboardHeader span { color: #2563eb; }
+
+        /* Search Bar */
+        .searchContainer {
+            margin-bottom: 32px;
+            position: relative;
         }
 
-        .summaryGrid {
+        .searchInput {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .searchInput:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Grid System */
+        .tickerGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto 40px;
         }
 
         .statCard {
-            background-color: white;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #e6e6e6;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .statLabel {
-            font-size: 14px;
-            font-weight: bold;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .statValue {
-            font-size: 28px;
-            font-weight: 800;
-            color: #111827;
-        }
-
-        .statValue.positive {
-            color: #10b981; 
-        }
-
-        .trendingBar {
-            width: 260px;
-            background-color: white;
-            border-left: 1px solid #e6e6e6;
-            position: sticky;
-            top: 0; 
-            height: 100vh;
-            padding: 24px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        .sidebarHeader {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #f3f4f6;
-            padding-bottom: 8px;
-        }
-
-        .tempTicker {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f9fafb;
-        }
-
-        .tickerSymbol {
-            font-weight: bold;
-            color: #111827;
-        }
-
-        .priceOfTicker {
-            font-weight: 600;
-            color: #10b981; 
-        }
-
-        footer {
-            background-color: #111827;
-            color: #9ca3af;
-            padding: 24px 32px;
-            text-align: center;
-            border-top: 1px solid #374151;
-            position: relative;
-            z-index: 101;
-        }
-
-        .footerText {
-            margin: 4px 0;
-            font-size: 13px;
-        }
-
-        .leagueCard {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .leagueCard:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .statCard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             border-color: #2563eb;
         }
 
-        .leagueTitle {
-            font-size: 22px;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 16px;
+        .companyName {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
         }
 
-        .leagueMetric {
+        .tickerSymbol {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .priceRow {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-            font-size: 14px;
+            align-items: center;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 12px;
         }
 
-        .leagueMetricLabel {
-            font-weight: bold;
-            color: #6b7280;
-        }
-
-        .leagueMetricValue {
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .leagueInput {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 16px 0;
-            border: 1px solid #d1d5db;
+        .priceValue { font-weight: 700; font-size: 18px; }
+        .sectorBadge {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 4px 8px;
             border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
         }
 
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-left: 1px solid #e5e7eb;
+            padding: 32px 24px;
+            display: none; /* Hidden on small screens */
+        }
+
+        @media (min-width: 1024px) { .sidebar { display: block; } }
+
+        .sidebarHeader { font-weight: 800; margin-bottom: 20px; font-size: 18px; }
+
+        .trendingItem {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Sentinel & Loading */
+        #sentinel {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            background: #111827;
+            color: #9ca3af;
+            padding: 32px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -251,177 +193,120 @@
         <a href="landingPage.html" class="logo">FantaStock</a>
         <div class="navLinks">
             <a href="portfolioPage.html">Portfolio</a>
-            <a href="stockTickerPage.html">Tickers</a>
+            <a href="stockTickerPage.html" style="color: #2563eb;">Tickers</a>
             <a href="newsPage.html">News</a>
             <a href="leagueSelect.html">Leagues</a>
         </div>
         <div class="AuthenticatorButton"></div>
     </nav>
-    <script src="auth.js"></script>
 
-    <div class = "pageFixxerUpper">
-        <div class = "mainAreaContainer">
-            
-            <div class = "dashboardHeader">
-
-                <h1>Market <span>Tickers</span></h1>
-
+    <div class="pageContainer">
+        <main class="mainContent">
+            <div class="dashboardHeader">
+                <h1>Market <span>Explorer</span></h1>
             </div>
 
-            <div style = "max-width: 1000px; margin: 0 auto 32px;">
-
-                <input type = "text" id = "tickerSearch" class = "leagueInput" placeholder=  "Search by ticker symbol or company name...">
-
+            <div class="searchContainer">
+                <input type="text" id="tickerSearch" class="searchInput" placeholder="Search by name or symbol (e.g. AAPL)...">
             </div>
 
-            <div class = "summaryGrid" id = "tickerGrid">
-                
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">Apple Inc.</div>
-                    <div class = "leagueTitle">AAPL</div>
-                    
-
-                    <div class = "leagueMetric">
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$182.63</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+1.2%</span>
-
-                    </div>
-                </div>
-                
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">Tesla, Inc.</div>
-                    
-                    <div class = "leagueTitle">TSLA</div>
-                    
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$202.11</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+0.8%</span>
-                    </div>
-                </div>
-                
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">NVIDIA Corp.</div>
-                    <div class = "leagueTitle">NVDA</div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$726.13</span>
-
-                    </div>
-
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+3.5%</span>
-
-                    </div>
+            <div class="tickerGrid" id="tickerGrid">
                 </div>
 
-                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html'">
-
-                    <div class = "statLabel">Microsoft Corp.</div>
-                    <div class = "leagueTitle">MSFT</div>
-                    
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Current Price</span>
-                        <span class = "leagueMetricValue">$406.32</span>
-
-                    </div>
-                    <div class = "leagueMetric">
-
-                        <span class = "leagueMetricLabel">Daily Change</span>
-                        <span class = "leagueMetricValue positive">+0.4%</span>
-
-                    </div>
-                </div>
+            <div id="sentinel">
+                <p id="statusMsg">Scanning the markets...</p>
             </div>
+        </main>
 
-        </div>
-
-        <aside class = "trendingBar">
-            <div class = "sidebarHeader">Trending Tickers</div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">AAPL</span>
-                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">TSLA</span>
-                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">NVDA</span>
-                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
-
-            </div>
-            
-            <div class="tempTicker">
-
-                <span class = "tickerSymbol">MSFT</span>
-                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
-
-            </div>
-        
+        <aside class="sidebar">
+            <div class="sidebarHeader">Trending Today</div>
+            <div class="trendingItem"><strong>AAPL</strong> <span style="color: #10b981;">$182.63</span></div>
+            <div class="trendingItem"><strong>TSLA</strong> <span style="color: #ef4444;">$202.11</span></div>
+            <div class="trendingItem"><strong>NVDA</strong> <span style="color: #10b981;">$726.13</span></div>
         </aside>
     </div>
 
     <footer>
-
-        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
-        <p class = "footerText">Chrisitan Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
-
+        <p>CP317 Software Engineering — Winter 2026</p>
     </footer>
 
     <script>
-        //event listener that listens for when the user types
-        document.getElementById('tickerSearch').addEventListener('input', function(e) {
-            var searchTerm = e.target.value.toLowerCase();
-            //this selects the tickers in the grid
-            var cards = document.querySelectorAll('#tickerGrid .leagueCard');
+        let offset = 0;
+        const limit = 12;
+        let isFull = false;
+        let isLoading = false;
 
-            //iterate throguh each ticker determining if it should be shown or not
-            cards.forEach(card => {
-                //get these 2 and make lowercase to check w the search term
-                var companyName = card.querySelector('.statLabel').textContent.toLowerCase();
-                var tickerSymbol = card.querySelector('.leagueTitle').textContent.toLowerCase();
+        const grid = document.getElementById('tickerGrid');
+        const statusMsg = document.getElementById('statusMsg');
+        const searchInput = document.getElementById('tickerSearch');
 
-                //if either name or ticker symbol have thew search term display, else, dont
-                if (companyName.includes(searchTerm) || tickerSymbol.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } 
-                else {
-                    card.style.display = 'none';
+        async function fetchStocks(query = '', reset = false) {
+            if (isLoading || (isFull && !reset)) return;
+            isLoading = true;
+
+            if (reset) {
+                offset = 0;
+                grid.innerHTML = '';
+                isFull = false;
+                statusMsg.textContent = "Loading more tickers...";
+            }
+
+            try {
+                const response = await fetch(`/api/stocks?limit=${limit}&offset=${offset}&search=${query}`);
+                const stocks = await response.json();
+
+                if (stocks.length < limit) {
+                    isFull = true;
+                    statusMsg.textContent = query ? "No more matches." : "You've reached the end of the market.";
                 }
-            });
+
+                stocks.forEach(stock => {
+                    const card = document.createElement('div');
+                    card.className = 'statCard';
+                    card.onclick = () => window.location.href = `detailedTicker.html?symbol=${stock.tickerSymbol}`;
+                    
+                    card.innerHTML = `
+                        <div class="companyName">${stock.companyName}</div>
+                        <div class="tickerSymbol">${stock.tickerSymbol}</div>
+                        <div class="priceRow">
+                            <span class="priceValue">$${parseFloat(stock.currentPrice).toFixed(2)}</span>
+                            <span class="sectorBadge">${stock.sector || 'Equity'}</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                offset += limit;
+            } catch (err) {
+                console.error("Fetch error:", err);
+                statusMsg.textContent = "Unable to connect to market database.";
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // Intersection Observer for Infinite Scroll
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !isFull) {
+                fetchStocks(searchInput.value);
+            }
+        }, { rootMargin: '200px' }); // Load 200px before reaching bottom
+
+        observer.observe(document.getElementById('sentinel'));
+
+        // Search with Debounce
+        let timeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => fetchStocks(e.target.value, true), 400);
+        });
+
+        // Quick Jump on Enter
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && searchInput.value.length > 0) {
+                window.location.href = `detailedTicker.html?symbol=${searchInput.value.toUpperCase()}`;
+            }
         });
     </script>
-
 </body>
 </html>
