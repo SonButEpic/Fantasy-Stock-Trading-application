@@ -2,9 +2,9 @@
   "name": "fantasy-stock-trading-application",
   "version": "1.0.0",
   "description": "Fantasy stock trading with SQL authentication backend.",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

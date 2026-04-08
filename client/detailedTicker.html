@@ -252,6 +252,27 @@
             margin-right: 10px;
         }
 
+        .tradeMessage {
+            max-width: 1000px;
+            margin: 0 auto 24px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .tradeMessage.success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .tradeMessage.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
     </style>
 </head>
 <body>
@@ -272,12 +293,12 @@
         <div class = "mainAreaContainer">
             
             <div class = "dashboardHeader">
-                <h1>AAPL <span>Apple Inc.</span></h1>
+                <h1><span id="tickerSymbolHeading">AAPL</span> <span id="companyNameHeading">Apple Inc.</span></h1>
             </div>
 
             <div class = "holdingsArea">
                 
-                <h2 style = "margin-top: 0; font-size: 32px; color: #111827;">$123.45 <span class = "positive" style = "font-size: 18px; margin-left: 8px;">+1.2%</span></h2>
+                <h2 style = "margin-top: 0; font-size: 32px; color: #111827;"><span id="currentPriceHeading">$123.45</span> <span class = "positive" style = "font-size: 18px; margin-left: 8px;">+1.2%</span></h2>
 
                 <div class = "emptyStateContainer">
                     
@@ -300,16 +321,18 @@
 
             <div class = "dashboardHeader holdingsSubHeader">
                 
-                <h2>Trade AAPL</h2>
+                <h2 id="tradeHeader">Trade AAPL</h2>
 
             </div>
+
+            <div id="tradeMessage" class="tradeMessage"></div>
 
             <div class = "statCard" style = "max-width: 1000px; margin: 0 auto 40px; display: flex; align-items: center; gap: 16px;">
                 
                 <input type = "number" id="tradeQuantity" class = "leagueInput" placeholder = "Quantity" style = "max-width: 200px;">
                 
-                <button class = "buttonSignup" style = "background-color: #10b981;" onclick="goToPurchase()">Buy Shares</button>
-                <button class = "buttonSignup buttonSecondary" style = "color: #ef4444; border-color: #ef4444;">Sell Shares</button>
+                <button id="buyButton" class = "buttonSignup" style = "background-color: #10b981;" onclick="submitTrade('Buy')">Buy Shares</button>
+                <button id="sellButton" class = "buttonSignup buttonSecondary" style = "color: #ef4444; border-color: #ef4444;" onclick="submitTrade('Sell')">Sell Shares</button>
 
             </div>
 
@@ -393,20 +416,7 @@
 
     </footer>
 
-    <script>
-        function goToPurchase() {
-            var qty = document.getElementById('tradeQuantity').value;
-            
-            if (qty > 0) {
-                //pass the qty to the purchase page through url parameter (this is snatchTsTwin in purchasePage.html)
-                window.location.href = 'purchasePage.html?qty=' + qty;
-            } 
-            else {
-                //aint no way you entered 0
-                alert("Please enter a valid quantity.");
-            }
-        }
-    </script>
+    <script src="trades.js"></script>
 
 </body>
 </html>
