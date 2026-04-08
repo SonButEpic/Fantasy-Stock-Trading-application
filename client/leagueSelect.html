@@ -305,6 +305,28 @@
             margin-right: 10px;
         }
 
+        .emptyState {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border: 1px solid #e6e6e6;
+            border-radius: 12px;
+            padding: 40px 24px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .emptyState p {
+            margin: 8px 0 0;
+            color: #6b7280;
+        }
+
+        .leagueSubtext {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -418,122 +440,285 @@
     </footer>
 
     <script>
-        // Data for user's current leagues, currently hardcoded jsut for display n shi
-        var userLeagues = [
-            { name: "myLeague1", rank: "3rd", members: 123, value: "$12,345.67" },
-            { name: "myLeague2", rank: "4th", members: 456, value: "$89,010.23" },
-            { name: "myLeague3", rank: "5th", members: 789, value: "$45,678.90" }
-        ];
+        var LEAGUES_KEY = 'fantastock_leagues';
+        var USER_KEY = 'fantastock_currentUser';
+        var CURRENT_LEAGUE_KEY = 'fantastock_currentLeagueId';
 
-        // Fake database for codes to be tested what it would be like to join a league
-        var availableLeagues = [
-            { code: "123456", name: "test1 ", members: 12 },
-            { code: "234567", name: "test2", members: 34 },
-            { code: "345678", name: "test3", members: 56 }
-        ];
+        function getCurrentUser() {
+            return localStorage.getItem(USER_KEY);
+        }
 
-        //Function to display leagues, more so important later if they are dynamically displayed per user
-        function renderLeagues() {
-            var container = document.getElementById('leaguesContent');
-            
-            //rebuild if the leagues exist
-            if (userLeagues.length > 0) {
-                let html = '<div class="summaryGrid">';
-                
-                    userLeagues.forEach(league => {
-                    html += `
-                        <div class = "statCard leagueCard" onclick = "window.location.href = 'leaguePage.html'">
-                            <div class = "statLabel">Current Rank: ${league.rank}</div>
-                            <div class = "leagueTitle">${league.name}</div>
-                            <div class = "leagueMetric">
-                                <span class = "leagueMetricLabel">Members</span>
-                                <span class = "leagueMetricValue">${league.members}</span>
-                            </div>
-                            <div class = "leagueMetric">
-                                <span class = "leagueMetricLabel">Portfolio Value</span>
-                                <span class = "leagueMetricValue positive">${league.value}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                container.innerHTML = html;
-            } else {
-                //error message if no leagues are currently ongoing
-                container.innerHTML = `<div style = "text-align:center; padding: 40px;">No active leagues.</div>`;
+        function getAllLeagues() {
+            try {
+                return JSON.parse(localStorage.getItem(LEAGUES_KEY)) || [];
+            } catch (error) {
+                return [];
             }
         }
 
-        //display the join league
+        function saveAllLeagues(leagues) {
+            localStorage.setItem(LEAGUES_KEY, JSON.stringify(leagues));
+        }
+
+        function getUserLeagues() {
+            var currentUser = getCurrentUser();
+            if (!currentUser) {
+                return [];
+            }
+
+            return getAllLeagues().filter(function(league) {
+                return league.members.some(function(member) {
+                    return member.username === currentUser;
+                });
+            });
+        }
+
+        function formatCurrency(amount) {
+            return Number(amount || 0).toLocaleString('en-CA', {
+                style: 'currency',
+                currency: 'CAD',
+                minimumFractionDigits: 2
+            });
+        }
+
+        function ordinal(number) {
+            var remainderTen = number % 10;
+            var remainderHundred = number % 100;
+
+            if (remainderTen === 1 && remainderHundred !== 11) return number + 'st';
+            if (remainderTen === 2 && remainderHundred !== 12) return number + 'nd';
+            if (remainderTen === 3 && remainderHundred !== 13) return number + 'rd';
+            return number + 'th';
+        }
+
+        function getSortedMembers(league) {
+            return league.members.slice().sort(function(a, b) {
+                return Number(b.portfolioValue || 0) - Number(a.portfolioValue || 0);
+            });
+        }
+
+        function getCurrentUserRank(league) {
+            var currentUser = getCurrentUser();
+            var sortedMembers = getSortedMembers(league);
+            var memberIndex = sortedMembers.findIndex(function(member) {
+                return member.username === currentUser;
+            });
+
+            if (memberIndex === -1) {
+                return 'N/A';
+            }
+
+            return ordinal(memberIndex + 1);
+        }
+
+        function generateLeagueId() {
+            return 'league_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+        }
+
+        function generateInviteCode(existingLeagues) {
+            var letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            var code = '';
+
+            do {
+                code = '';
+                for (var i = 0; i < 6; i++) {
+                    code += letters.charAt(Math.floor(Math.random() * letters.length));
+                }
+            } while (existingLeagues.some(function(league) {
+                return league.code === code;
+            }));
+
+            return code;
+        }
+
+        function resetCreateForm() {
+            document.getElementById('createLeagueName').value = '';
+            document.getElementById('createStartingCash').value = '';
+            document.getElementById('createStartDate').value = '';
+            document.getElementById('createEndDate').value = '';
+        }
+
+        function resetJoinForm() {
+            document.getElementById('leagueCodeInput').value = '';
+        }
+
+        function openLeague(leagueId) {
+            localStorage.setItem(CURRENT_LEAGUE_KEY, leagueId);
+            window.location.href = 'leaguePage.html?leagueId=' + encodeURIComponent(leagueId);
+        }
+
+        function renderLeagues() {
+            var container = document.getElementById('leaguesContent');
+            var userLeagues = getUserLeagues();
+
+            if (userLeagues.length > 0) {
+                var html = '<div class="summaryGrid">';
+
+                userLeagues.forEach(function(league) {
+                    var currentUser = league.members.find(function(member) {
+                        return member.username === getCurrentUser();
+                    });
+
+                    html += `
+                        <div class = "statCard leagueCard" onclick = "openLeague('${league.id}')">
+                            <div class = "statLabel">Current Rank: ${getCurrentUserRank(league)}</div>
+                            <div class = "leagueTitle">${league.name}</div>
+                            <div class = "leagueMetric">
+                                <span class = "leagueMetricLabel">Members</span>
+                                <span class = "leagueMetricValue">${league.members.length}</span>
+                            </div>
+                            <div class = "leagueMetric">
+                                <span class = "leagueMetricLabel">Portfolio Value</span>
+                                <span class = "leagueMetricValue positive">${formatCurrency(currentUser ? currentUser.portfolioValue : 0)}</span>
+                            </div>
+                            <div class = "leagueSubtext">Invite Code: ${league.code}</div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                container.innerHTML = html;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class = "emptyState">
+                    <h2 style = "margin: 0;">No leagues yet</h2>
+                    <p>Create a league to generate an invite code, or join one with a code from another player.</p>
+                </div>
+            `;
+        }
+
         function openJoinModal() {
             document.getElementById('joinModal').style.display = 'flex';
             document.getElementById('errorMessage').style.display = 'none';
+            resetJoinForm();
         }
 
-        //display the create league
         function openCreateModal() {
             document.getElementById('createModal').style.display = 'flex';
             document.getElementById('createErrorMessage').style.display = 'none';
+            resetCreateForm();
         }
 
-        //hides the modal element specified
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        //validation function when a join code is used and adding the league to the users list
         function submitJoinLeague() {
             var code = document.getElementById('leagueCodeInput').value.trim();
             var errorDiv = document.getElementById('errorMessage');
-            
-            //Checks if the entered code is in the mock database as of rn
-            var found = availableLeagues.find(l => l.code === code);
+            var currentUser = getCurrentUser();
+            var leagues = getAllLeagues();
 
-            //if the code is found:
-            if (found) {
-                //add the league to the users viwe
-                userLeagues.push({
-                    name: found.name,
-                    rank: "N/A",
-                    members: found.members + 1,
-                    value: "$0.00"
-                });
-                renderLeagues();
-                closeModal('joinModal');
-            } else {
-                //error message
+            if (!currentUser) {
+                errorDiv.textContent = 'Please log in before joining a league.';
                 errorDiv.style.display = 'block';
+                return;
             }
+
+            var foundLeague = leagues.find(function(league) {
+                return league.code.toUpperCase() === code.toUpperCase();
+            });
+
+            if (!foundLeague) {
+                errorDiv.textContent = 'Invalid code. Please try again.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            var alreadyMember = foundLeague.members.some(function(member) {
+                return member.username === currentUser;
+            });
+
+            if (alreadyMember) {
+                errorDiv.textContent = 'You are already a member of this league.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            foundLeague.members.push({
+                username: currentUser,
+                tradesMade: 0,
+                totalReturn: 0,
+                portfolioValue: Number(foundLeague.startingCash || 0)
+            });
+
+            saveAllLeagues(leagues);
+            renderLeagues();
+            closeModal('joinModal');
+            openLeague(foundLeague.id);
         }
 
-        //function to make the actual league (like hwen creating)
         function submitCreateLeague() {
-
             var name = document.getElementById('createLeagueName').value.trim();
             var cash = document.getElementById('createStartingCash').value;
             var start = document.getElementById('createStartDate').value;
             var end = document.getElementById('createEndDate').value;
             var errorDiv = document.getElementById('createErrorMessage');
+            var currentUser = getCurrentUser();
+            var leagues = getAllLeagues();
 
-            //quick if to check that all fields are filled in when submitted, if so then create the league object
-            if (name && cash && start && end) {
-                userLeagues.push({
-                    
-                    name: name,
-                    rank: "1st",
-                    members: 1,
-                    value: `$${parseFloat(cash).toLocaleString()}`
-                });
-                renderLeagues();
-                closeModal('createModal');
-            } else {
-                //quick error if anything in the if is missing
+            if (!currentUser) {
+                errorDiv.textContent = 'Please log in before creating a league.';
                 errorDiv.style.display = 'block';
+                return;
             }
+
+            if (!name || !cash || !start || !end) {
+                errorDiv.textContent = 'Please fill in all parameters.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (new Date(end) < new Date(start)) {
+                errorDiv.textContent = 'End date must be after the start date.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            var parsedCash = Number(cash);
+            if (Number.isNaN(parsedCash) || parsedCash <= 0) {
+                errorDiv.textContent = 'Starting virtual currency must be greater than 0.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            var newLeague = {
+                id: generateLeagueId(),
+                name: name,
+                code: generateInviteCode(leagues),
+                startingCash: parsedCash,
+                startDate: start,
+                endDate: end,
+                createdBy: currentUser,
+                members: [{
+                    username: currentUser,
+                    tradesMade: 0,
+                    totalReturn: 0,
+                    portfolioValue: parsedCash
+                }]
+            };
+
+            leagues.push(newLeague);
+            saveAllLeagues(leagues);
+            renderLeagues();
+            closeModal('createModal');
+            openLeague(newLeague.id);
         }
 
-        //render this once page is done loading
-        window.onload = renderLeagues;
+        window.onload = function() {
+            renderLeagues();
+
+            if (!getCurrentUser()) {
+                document.getElementById('leaguesContent').innerHTML = `
+                    <div class = "emptyState">
+                        <h2 style = "margin: 0;">Log in to manage leagues</h2>
+                        <p>League membership is saved per account, so sign in first to create or join a league.</p>
+                    </div>
+                `;
+            }
+        };
     </script>
 </body>
 </html>

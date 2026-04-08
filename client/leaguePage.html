@@ -247,6 +247,23 @@
             font-size: 13px;
         }
 
+        .leagueMeta {
+            max-width: 1000px;
+            margin: 0 auto 20px;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .emptyState {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            background-color: white;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
@@ -267,8 +284,10 @@
         <div class = "mainAreaContainer">
             
             <div class = "dashboardHeader">
-                <h1><span>Global Trading League</span></h1>
+                <h1><span id = "leagueName">League</span></h1>
             </div>
+
+            <div class = "leagueMeta" id = "leagueMeta"></div>
 
             <div class="summaryGrid">
                 
@@ -311,60 +330,7 @@
 
                 </div>
 
-                <div id = "holdingsContainer">
-
-                    <div class = "holdingRow">
-                        <div>
-
-                            <span class = "tickerName">1. MarketWizard</span><br>
-                            
-                        </div>
-
-                        <div>5</div>
-                        <div class = "priceOfTicker">+12.34%</div>
-                        
-                        <div class = "holdingPrice">$12,345.67</div>
-                    </div>
-
-                    <div class = "holdingRow">
-                        <div>
-
-                            <span class = "tickerName">2. BullRunner</span><br>
-
-                        </div>
-                        
-                        <div>5</div>
-                        <div class="priceOfTicker">+12.34%</div>
-
-                        <div class = "holdingPrice">$12,345.67</div>
-                    </div>
-
-                    <div class = "holdingRow">
-                        <div>
-
-                            <span class = "tickerName" style = "color: #2563eb;">3. You</span><br>
-
-                        </div>
-
-                        <div>5</div>
-                        <div class = "priceOfTicker">+12.34%</div>
-                        
-                        <div class = "holdingPrice">$12,345.67</div>
-                    </div>
-
-                    <div class = "holdingRow">
-                        <div>
-
-                            <span class = "tickerName">4. BearMinimum</span><br>
-
-                        </div>
-
-                        <div>5</div>
-                        <div class="priceOfTicker">+12.34%</div>
-                        
-                        <div class = "holdingPrice">$12,345.67</div>
-                    </div>
-                </div>
+                <div id = "holdingsContainer"></div>
             </div>
         </div>
 
@@ -408,6 +374,127 @@
         <p class = "footerText">Chrisitan Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
 
     </footer>
+
+    <script>
+        var LEAGUES_KEY = 'fantastock_leagues';
+        var USER_KEY = 'fantastock_currentUser';
+        var CURRENT_LEAGUE_KEY = 'fantastock_currentLeagueId';
+
+        function getCurrentUser() {
+            return localStorage.getItem(USER_KEY);
+        }
+
+        function getAllLeagues() {
+            try {
+                return JSON.parse(localStorage.getItem(LEAGUES_KEY)) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function formatCurrency(amount) {
+            return Number(amount || 0).toLocaleString('en-CA', {
+                style: 'currency',
+                currency: 'CAD',
+                minimumFractionDigits: 2
+            });
+        }
+
+        function formatPercent(value) {
+            var numericValue = Number(value || 0);
+            var sign = numericValue >= 0 ? '+' : '';
+            return sign + numericValue.toFixed(2) + '%';
+        }
+
+        function ordinal(number) {
+            var remainderTen = number % 10;
+            var remainderHundred = number % 100;
+
+            if (remainderTen === 1 && remainderHundred !== 11) return number + 'st';
+            if (remainderTen === 2 && remainderHundred !== 12) return number + 'nd';
+            if (remainderTen === 3 && remainderHundred !== 13) return number + 'rd';
+            return number + 'th';
+        }
+
+        function getSortedMembers(league) {
+            return league.members.slice().sort(function(a, b) {
+                return Number(b.portfolioValue || 0) - Number(a.portfolioValue || 0);
+            });
+        }
+
+        function getSelectedLeague() {
+            var params = new URLSearchParams(window.location.search);
+            var requestedId = params.get('leagueId') || localStorage.getItem(CURRENT_LEAGUE_KEY);
+
+            return getAllLeagues().find(function(league) {
+                return league.id === requestedId;
+            });
+        }
+
+        function renderLeaguePage() {
+            var league = getSelectedLeague();
+            var currentUser = getCurrentUser();
+
+            if (!league || !currentUser) {
+                document.querySelector('.mainAreaContainer').innerHTML = `
+                    <div class = "dashboardHeader">
+                        <h1><span>League</span></h1>
+                    </div>
+                    <div class = "emptyState">
+                        <h2 style = "margin: 0;">League not found</h2>
+                        <p style = "margin-top: 12px; color: #6b7280;">Return to <a href = "leagueSelect.html">My Leagues</a> and pick a league from your account.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            localStorage.setItem(CURRENT_LEAGUE_KEY, league.id);
+
+            var sortedMembers = getSortedMembers(league);
+            var currentUserIndex = sortedMembers.findIndex(function(member) {
+                return member.username === currentUser;
+            });
+            var currentUserData = sortedMembers[currentUserIndex];
+            var topPortfolioValue = sortedMembers.length > 0 ? Number(sortedMembers[0].portfolioValue || 0) : 0;
+            var currentPortfolioValue = currentUserData ? Number(currentUserData.portfolioValue || 0) : 0;
+            var distanceToFirst = Math.max(0, topPortfolioValue - currentPortfolioValue);
+
+            document.getElementById('leagueName').textContent = league.name;
+            document.getElementById('leagueMeta').textContent =
+                'Invite Code: ' + league.code +
+                ' | Starting Cash: ' + formatCurrency(league.startingCash) +
+                ' | Dates: ' + league.startDate + ' to ' + league.endDate;
+            document.getElementById('currentRank').textContent = currentUserIndex === -1 ? 'N/A' : ordinal(currentUserIndex + 1);
+            document.getElementById('totalMembers').textContent = league.members.length;
+            document.getElementById('distanceToFirst').textContent = formatCurrency(distanceToFirst);
+
+            var holdingsHtml = sortedMembers.map(function(member, index) {
+                var isCurrentUser = member.username === currentUser;
+
+                return `
+                    <div class = "holdingRow">
+                        <div>
+                            <span class = "tickerName" style = "${isCurrentUser ? 'color: #2563eb;' : ''}">${index + 1}. ${isCurrentUser ? 'You' : member.username}</span><br>
+                        </div>
+                        <div>${member.tradesMade || 0}</div>
+                        <div class = "priceOfTicker">${formatPercent(member.totalReturn || 0)}</div>
+                        <div class = "holdingPrice">${formatCurrency(member.portfolioValue || 0)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('holdingsContainer').innerHTML = holdingsHtml || `
+                <div class = "holdingRow">
+                    <div>No members yet</div>
+                    <div>0</div>
+                    <div class = "priceOfTicker">+0.00%</div>
+                    <div class = "holdingPrice">${formatCurrency(0)}</div>
+                </div>
+            `;
+        }
+
+        window.onload = renderLeaguePage;
+    </script>
 
 </body>
 </html>
