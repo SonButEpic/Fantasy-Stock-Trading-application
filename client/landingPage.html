@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fantasy Stock Trading - Home</title>
     <style>
-
+        /* --- Base Styles --- */
         body {
-            /* Margin 0 so backgrounds cover all of the screen */
             margin: 0;
-            font-family: 'calibri';
-            /* Slight contrast on main body of landing page */
+            font-family: 'Segoe UI', 'Calibri', sans-serif;
             background-color: #e1e2e2;
             color: #1f2937;
             display: flex;
@@ -18,6 +16,7 @@
             min-height: 100vh;
         }
 
+        /* --- Navbar --- */
         .navbar {
             display: flex;
             align-items: center;
@@ -25,102 +24,138 @@
             padding: 16px 32px;
             background-color: white;
             border-bottom: 1px solid #e6e6e6;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             position: relative;
             z-index: 101;
         }
 
         .logo {
             font-size: 24px;
-            font-weight: bold;
+            font-weight: 800;
             color: #2563eb;
-            /* remove link modifications */
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
         .navLinks {
             display: flex;
-            gap: 24px;
+            gap: 32px;
         }
 
         .navLinks a {
             text-decoration: none;
             color: #4b5563;
-            font-weight: 500;
-            transition: color 0.2s;
+            font-weight: 600;
+            transition: color 0.2s ease;
         }
 
         .navLinks a:hover {
             color: #2563eb;
         }
 
+        /* --- Navbar Auth Buttons --- */
         .AuthenticatorButton {
             display: flex;
-            gap: 16px;
+            gap: 12px;
+            align-items: center;
         }
 
-        .loginButton {
-            background: none;
-            border: none;
-            color: #2563eb;
+        .loginButton, .logoutButton {
+            background: transparent;
+            color: #4b5563;
+            border: 2px solid transparent;
+            padding: 8px 20px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .loginButton:hover, .logoutButton:hover {
+            color: #2563eb;
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
         }
 
         .buttonSignup {
             background-color: #2563eb;
             color: #ffffff;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 8px;
             border: none;
             font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
+            font-size: 15px;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.15);
+            transition: all 0.2s ease;
         }
 
         .buttonSignup:hover {
             background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.25);
         }
 
-        /* Container to manage the sidebar and content layout */
+        /* --- Layout --- */
         .pageFixxerUpper {
             display: flex;
             flex: 1;
             position: relative;
         }
 
-        /* Main content area */
         .mainAreaContainer {
             flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
         }
 
-
-        .mainArea {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 64px 32px;
+        /* --- Hero Section --- */
+        .heroCard {
+            background-color: white;
+            border-radius: 24px;
+            padding: 60px 40px;
             text-align: center;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ffffff;
         }
 
-        .mainArea h1 {
-            font-size: 48px;
-            font-weight: 800;
+        .heroBadge {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #2563eb;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
             margin-bottom: 24px;
-            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .mainArea h1 span {
+        .heroCard h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin: 0 0 24px 0;
+            color: #111827;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .heroCard h1 span {
             color: #2563eb;
         }
 
-        .mainArea p {
+        .heroCard p {
             font-size: 20px;
             color: #4b5563;
-            max-width: 670px;
-            margin: 0 auto 32px;
-            line-height: 26px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
         }
 
         .mainAreaSupreme {
@@ -130,129 +165,102 @@
         }
 
         .mainButton {
-            padding: 12px 32px;
+            padding: 14px 36px;
             background-color: #2563eb;
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .mainButton:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
         }
 
         .secondaryButton {
-            padding: 12px 32px;
+            padding: 14px 36px;
             background-color: white;
             color: #374151;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
+            transition: all 0.2s ease;
         }
 
-        .newsArea {
-            background-color: #ffffff;
-            padding: 48px 32px;
+        .secondaryButton:hover {
+            background-color: #f9fafb;
+            transform: translateY(-2px);
         }
 
-        
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .newsGrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin-top: 32px;
-        }
-
-        .newsBubble {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 24px;
-            transition: box-shadow 0.3s;
-        }
-
-        .newsBubble:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .newsTag {
-            font-size: 12px;
-            font-weight: bold;
-            color: #3b82f6;
-            text-transform: uppercase;
-        }
-
-
+        /* --- Sidebar --- */
         .trendingBar {
-            width: 260px;
+            width: 300px;
             background-color: white;
             border-left: 1px solid #e6e6e6;
-            /* Sticky makes sure it stays at the top of the window as you scroll */
             position: sticky;
-            top: 0; 
+            top: 0;
             height: 100vh;
-            padding: 24px;
+            padding: 32px 24px;
             box-sizing: border-box;
             overflow-y: auto;
         }
 
         .sidebarHeader {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #f3f4f6;
-            padding-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+            font-weight: 800;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 12px;
         }
 
         .tempTicker {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f9fafb;
+            padding: 16px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
         }
 
-        .tickerSymbol {
-            font-weight: bold;
-            color: #111827;
+        .tempTicker:hover {
+            background-color: #f3f4f6;
         }
 
-        .priceOfTicker {
-            font-weight: 600;
-            color: #10b981; 
-        }
+        .tickerSymbol { font-weight: 800; color: #111827; }
+        .priceOfTicker { font-weight: 700; color: #10b981; }
 
+        /* --- Footer --- */
         footer {
             background-color: #111827;
             color: #9ca3af;
-            padding: 24px 32px;
+            padding: 32px;
             text-align: center;
             border-top: 1px solid #374151;
-            position: relative;
-            z-index: 101;
         }
 
-        .footerText {
-            margin: 4px 0;
-            font-size: 13px;
+        .footerText { margin: 6px 0; font-size: 14px; }
+
+        @media (max-width: 1024px) {
+            .heroCard h1 { font-size: 40px; }
+            .trendingBar { width: 260px; }
         }
 
-        .newsHeader{
-            font-size: 18px; 
-            margin: 8px 0;
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 16px; }
+            .pageFixxerUpper { flex-direction: column; }
+            .trendingBar { width: 100%; height: auto; position: static; border-left: none; }
+            .mainAreaSupreme { flex-direction: column; }
         }
-
-        .newsP{
-            font-size: 14px; 
-            line-height: 20px;
-        }
-
     </style>
 </head>
 <body>
@@ -267,132 +275,55 @@
         </div>
         <div class="AuthenticatorButton"></div>
     </nav>
+
     <script src="auth.js"></script>
 
-    <div class = "pageFixxerUpper">
-        <div class = "mainAreaContainer">
-            
-            <header class = "mainArea">
-                <!-- not sure if we have a name or not so im leaving this blank for now -->
-                <h1>Trading Without The Risk. <span> Learn With FantaStock.</span></h1>
+    <div class="pageFixxerUpper">
+        
+        <div class="mainAreaContainer">
+            <header class="heroCard">
+                <span class="heroBadge">Risk-Free Market Simulator</span>
+                <h1>Trading Without The Risk.<br><span>Learn With FantaStock.</span></h1>
                 <p>
                     Experience our Fantasy Stock Trading application. Practice using virtual money 
                     and simulated trades in a safe, competitive environment. Start your journey today!
                 </p>
                 <div class="mainAreaSupreme">
-                    
-                    <!-- simialr thing for these buttons. Can be like create account or sum since the user isnt logged in -->
-                    <button class = "mainButton" onclick="window.location.href='createAccount.html'">Create Account</button>
-                    <button class = "secondaryButton" onclick="window.location.href='login.html'">Log in</button>
-                
+                    <button class="mainButton" onclick="window.location.href='createAccount.html'">Create Account</button>
+                    <button class="secondaryButton" onclick="window.location.href='login.html'">Log In</button>
                 </div>
             </header>
-
-            <!-- all of these news nuggets are blank for now, can probs use fake ones to save time making the project -->
-            <section class = "newsArea">
-                <div class = "container">
-                    
-                    <h2 style = "font-size: 24px;">Trending Market News</h2>
-                    <div class = "newsGrid">
-                        
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article1.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 1)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 1</div>
-
-                        </article>
-
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article2.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 2)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 2</div>
-
-                        </article>
-
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article3.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 3)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 3</div>
-
-                        </article>
-                        
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article4.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 4)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 4</div>
-                        
-                        </article>
-
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article5.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 5)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 5</div>
-                        
-                        </article>
-
-                        <article class = "newsBubble" onclick="window.location.href='/client/newsArticles/article6.html'" style="cursor: pointer;">
-                            
-                            <span class = "newsTag">(Type of news 6)</span>
-                            <h3 class = newsHeader>Title of news report</h3>
-                            <p class = "newsP">Description of news report</p>
-                            <div class = "footerText">Author 6</div>
-                        
-                        </article>
-                    </div>
-                </div>
-            </section>
         </div>
 
-        <!-- simialr thing as the news, hardcode "trending" tickers to save time from actually using trending ones -->
-        <aside class = "trendingBar">
-            <div class = "sidebarHeader">Trending Tickers</div>
+        <aside class="trendingBar">
+            <div class="sidebarHeader">Trending Tickers</div>
             
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">AAPL</span>
-                <span class = "priceOfTicker">$182.63 (+1.2%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">TSLA</span>
-                <span class = "priceOfTicker">$202.11 (+0.8%)</span>
-
-            </div>
-            
-            <div class = "tempTicker">
-
-                <span class = "tickerSymbol">NVDA</span>
-                <span class = "priceOfTicker">$726.13 (+3.5%)</span>
-
+            <div class="tempTicker">
+                <span class="tickerSymbol">AAPL</span>
+                <span class="priceOfTicker">$182.63 (+1.2%)</span>
             </div>
             
             <div class="tempTicker">
-
-                <span class = "tickerSymbol">MSFT</span>
-                <span class = "priceOfTicker">$406.32 (+0.4%)</span>
-
+                <span class="tickerSymbol">TSLA</span>
+                <span class="priceOfTicker">$202.11 (+0.8%)</span>
             </div>
-        
+            
+            <div class="tempTicker">
+                <span class="tickerSymbol">NVDA</span>
+                <span class="priceOfTicker">$726.13 (+3.5%)</span>
+            </div>
+            
+            <div class="tempTicker">
+                <span class="tickerSymbol">MSFT</span>
+                <span class="priceOfTicker">$406.32 (+0.4%)</span>
+            </div>
         </aside>
+
     </div>
 
     <footer>
-
-        <p class = "footerText">CP317 Software Engineering — Winter 2026</p>
-        <p class = "footerText">Chrisitan Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
-
+        <p class="footerText">CP317 Software Engineering — Winter 2026</p>
+        <p class="footerText">Christian Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
     </footer>
 
 </body>
