@@ -343,6 +343,7 @@
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.categoryButton').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+                
                 currentCategory = this.dataset.category;
                 fetchNews();
             });

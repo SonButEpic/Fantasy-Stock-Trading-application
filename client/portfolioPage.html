@@ -399,13 +399,12 @@
 
     <footer>
         <p class="footerText">CP317 Software Engineering - Winter 2026</p>
-        <p class="footerText">Christian Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
+        <p class="footerText">Chrisitan Arruda, Landen Kurt, Kieran Mochrie, Colin Murray, Samson Obasuyi, Krishna Patel, Ishaan Ramphul, Aman Rana, Karl Richter, Deva Sandhu</p>
     </footer>
 
     <script>
         (function () {
             const USER_KEY = 'fantastock_currentUser';
-            const API_KEY = 'ed2d5fcefdee42e7bd18e9bab65f0aa1'; 
 
             function formatCurrency(value) {
                 return new Intl.NumberFormat('en-CA', {
@@ -423,121 +422,43 @@
             }
 
             function formatDate(rawDate) {
-                if (!rawDate) return '--';
+                if (!rawDate) {
+                    return '--';
+                }
                 const date = new Date(rawDate);
-                return Number.isNaN(date.getTime()) ? '--' : date.toLocaleDateString('en-CA');
-            }
-
-            function showPopup(title, message, isSuccess) {
-                const modal = document.getElementById('tradeModal');
-                const titleEl = document.getElementById('modalTitle');
-                const msgEl = document.getElementById('modalMessage');
-                const iconEl = document.getElementById('modalIcon');
-                const closeBtn = document.getElementById('modalCloseBtn');
-
-                titleEl.textContent = title;
-                msgEl.textContent = message;
-                iconEl.textContent = isSuccess ? "✅" : "❌";
-                closeBtn.style.backgroundColor = isSuccess ? "#10b981" : "#ef4444";
-
-                modal.style.display = "flex";
-                closeBtn.onclick = () => { modal.style.display = "none"; };
-            }
-
-            async function getLivePrices(tickers) {
-                if (tickers.length === 0) return {};
-                try {
-                    const symbols = tickers.join(',');
-                    const response = await fetch(`https://api.twelvedata.com/price?symbol=${symbols}&apikey=${API_KEY}`);
-                    const data = await response.json();
-
-                    // Standardize output to { SYMBOL: PRICE_STRING } regardless of batch size
-                    const priceMap = {};
-                    if (tickers.length === 1) {
-                        const symbol = tickers[0];
-                        priceMap[symbol] = data.price;
-                    } else {
-                        for (const symbol in data) {
-                            if (data[symbol] && data[symbol].price) {
-                                priceMap[symbol] = data[symbol].price;
-                            }
-                        }
-                    }
-                    return priceMap;
-                } catch (err) {
-                    console.error("Live Price Fetch Failed:", err);
-                    return {};
+                if (Number.isNaN(date.getTime())) {
+                    return '--';
                 }
-            }
-
-            async function loadIndividualPortfolio() {
-                const username = localStorage.getItem(USER_KEY);
-                if (!username) {
-                    showPopup("Login Required", "Please log in to view your individual portfolio.", false);
-                    showError('Please log in to view your individual portfolio.');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`/api/portfolio/individual?username=${encodeURIComponent(username)}`);
-                    const result = await response.json();
-
-                    if (!response.ok || !result.success) {
-                        throw new Error(result.message || 'Unable to load portfolio.');
-                    }
-
-                    const portfolio = result.portfolio;
-                    const holdings = portfolio.holdings || [];
-                    const tickerList = [...new Set(holdings.map(h => h.tickerSymbol))];
-                    
-                    // Fetch real-time price map
-                    const livePrices = await getLivePrices(tickerList);
-
-                    let totalMarketValue = 0;
-                    const updatedHoldings = holdings.map(h => {
-                        const livePriceString = livePrices[h.tickerSymbol];
-                        
-                        // Use live price if available, otherwise fall back to DB stored price
-                        const currentPrice = livePriceString ? parseFloat(livePriceString) : parseFloat(h.currentPrice);
-                        const marketValue = h.quantity * currentPrice;
-                        totalMarketValue += marketValue;
-
-                        return { ...h, currentPrice, marketValue };
-                    });
-
-                    const totalPortfolioValue = totalMarketValue + parseFloat(portfolio.cashBalance);
-                    const initialBalance = 10000; 
-                    const performancePct = ((totalPortfolioValue - initialBalance) / initialBalance) * 100;
-
-                    setSummary({
-                        currentMarketValue: totalMarketValue,
-                        cashBalance: portfolio.cashBalance,
-                        portfolioValue: totalPortfolioValue,
-                        performancePct: performancePct
-                    });
-
-                    renderHoldings(updatedHoldings);
-                    renderTransactions(portfolio.transactions || []);
-
-                } catch (error) {
-                    showPopup("Error", error.message || "Could not load portfolio data.", false);
-                    showError(error.message || 'Unable to load portfolio.');
-                }
+                return date.toLocaleDateString('en-CA');
             }
 
             function setSummary(snapshot) {
-                document.getElementById('currentMarketValue').textContent = formatCurrency(snapshot.currentMarketValue);
-                document.getElementById('buyingPower').textContent = formatCurrency(snapshot.cashBalance);
-                document.getElementById('portfolioValue').textContent = formatCurrency(snapshot.portfolioValue);
-                
-                const perfEl = document.getElementById('performanceValue');
-                perfEl.textContent = formatPercent(snapshot.performancePct);
-                perfEl.className = 'statValue ' + (snapshot.performancePct >= 0 ? 'positive' : 'negative');
+                const currentMarketValueEl = document.getElementById('currentMarketValue');
+                const buyingPowerEl = document.getElementById('buyingPower');
+                const portfolioValueEl = document.getElementById('portfolioValue');
+                const performanceValueEl = document.getElementById('performanceValue');
+
+                currentMarketValueEl.textContent = formatCurrency(snapshot.currentMarketValue);
+                buyingPowerEl.textContent = formatCurrency(snapshot.cashBalance);
+                portfolioValueEl.textContent = formatCurrency(snapshot.portfolioValue);
+                performanceValueEl.textContent = formatPercent(snapshot.performancePct);
+
+                performanceValueEl.classList.remove('positive', 'negative');
+                if ((Number(snapshot.performancePct) || 0) > 0) {
+                    performanceValueEl.classList.add('positive');
+                } else if ((Number(snapshot.performancePct) || 0) < 0) {
+                    performanceValueEl.classList.add('negative');
+                }
             }
 
             function renderHoldings(holdings) {
                 const container = document.getElementById('holdingsContainer');
-                container.innerHTML = holdings.length ? '' : '<div class="placeholderMessage">No holdings yet.</div>';
+                container.innerHTML = '';
+
+                if (!holdings.length) {
+                    container.innerHTML = '<div class="placeholderMessage">No holdings yet. Buy a stock to begin your individual portfolio.</div>';
+                    return;
+                }
 
                 holdings.forEach((holding) => {
                     const row = document.createElement('div');
@@ -545,7 +466,7 @@
                     row.innerHTML = `
                         <div>
                             <span class="tickerName">${holding.tickerSymbol}</span><br>
-                            <span class="tickerFull">${holding.companyName || ''}</span>
+                            <span class="tickerFull">${holding.companyName}</span>
                         </div>
                         <div class="alignCenter">${holding.quantity}</div>
                         <div class="alignRight">${formatCurrency(holding.avgPrice)}</div>
@@ -558,11 +479,17 @@
 
             function renderTransactions(transactions) {
                 const container = document.getElementById('transactionsContainer');
-                container.innerHTML = transactions.length ? '' : '<div class="placeholderMessage">No transactions yet.</div>';
+                container.innerHTML = '';
+
+                if (!transactions.length) {
+                    container.innerHTML = '<div class="placeholderMessage">No transactions yet.</div>';
+                    return;
+                }
 
                 transactions.forEach((tx) => {
                     const row = document.createElement('div');
                     row.className = 'tableRow transactionsGrid';
+
                     const typeClass = tx.transactionType === 'Buy' ? 'transactionBuy' : 'transactionSell';
                     row.innerHTML = `
                         <div>${formatDate(tx.transactionDate)}</div>
@@ -572,15 +499,49 @@
                         <div class="alignRight">${formatCurrency(tx.pricePerShare)}</div>
                         <div class="alignRight">${formatCurrency(tx.totalPrice)}</div>
                     `;
+
                     container.appendChild(row);
                 });
             }
 
             function showError(message) {
                 document.getElementById('holdingsContainer').innerHTML = `<div class="placeholderMessage">${message}</div>`;
+                document.getElementById('transactionsContainer').innerHTML = '<div class="placeholderMessage">Unable to load transactions.</div>';
+
+                document.getElementById('currentMarketValue').textContent = '--';
+                document.getElementById('buyingPower').textContent = '--';
+                document.getElementById('portfolioValue').textContent = '--';
+                document.getElementById('performanceValue').textContent = '--';
             }
 
-            loadIndividualPortfolio();
+            async function loadIndividualPortfolio() {
+                const username = localStorage.getItem(USER_KEY);
+                if (!username) {
+                    showError('Please log in to view your individual portfolio.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/portfolio/individual?username=${encodeURIComponent(username)}`);
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Unable to load portfolio.');
+                    }
+
+                    setSummary(result.portfolio);
+                    renderHoldings(result.portfolio.holdings || []);
+                    renderTransactions(result.portfolio.transactions || []);
+                } catch (error) {
+                    showError(error.message || 'Unable to load portfolio.');
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                window.addEventListener('DOMContentLoaded', loadIndividualPortfolio);
+            } else {
+                loadIndividualPortfolio();
+            }
         })();
     </script>
 

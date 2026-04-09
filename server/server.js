@@ -57,6 +57,46 @@ function parsePositiveInteger(value) {
     return numeric;
 }
 
+async function ensureIndividualPortfolio(userID) {
+    const [existing] = await pool.execute(
+        `SELECT portfolioID, userID, leagueID, cashBalance, createdDate
+         FROM Portfolio
+         WHERE userID = ? AND leagueID IS NULL
+         ORDER BY portfolioID DESC
+         LIMIT 1`,
+        [userID]
+    );
+
+    if (existing.length > 0) {
+        return existing[0];
+    }
+
+    const startingCash = 10000;
+    const [result] = await pool.execute(
+        `INSERT INTO Portfolio (userID, leagueID, cashBalance, portfolioType, createdDate)
+         VALUES (?, NULL, ?, 'Individual', CURDATE())`,
+        [userID, startingCash]
+    );
+
+    return {
+        portfolioID: result.insertId,
+        userID,
+        leagueID: null,
+        cashBalance: startingCash,
+        createdDate: new Date(),
+    };
+}
+
+app.use(express.json());
+
+function parsePositiveInteger(value) {
+    const numeric = Number(value);
+    if (!Number.isInteger(numeric) || numeric <= 0) {
+        return null;
+    }
+    return numeric;
+}
+
 /**
  * NEW: Fetches the real-time price from Twelve Data API.
  * This ensures trades use current market values instead of seeded database values.
@@ -232,44 +272,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// --- 2. STOCK API ROUTES ---
-app.get('/api/stocks', async (req, res) => {
-    const limit = parseInt(req.query.limit, 10) || 12;
-    const offset = parseInt(req.query.offset, 10) || 0;
-    const search = req.query.search || '';
-
-    try {
-        const searchParam = `%${search}%`;
-        const sql = `
-            SELECT * FROM Stock 
-            WHERE tickerSymbol LIKE ? OR companyName LIKE ? 
-            ORDER BY tickerSymbol ASC 
-            LIMIT ${limit} OFFSET ${offset}
-        `;
-        
-        const [rows] = await pool.query(sql, [searchParam, searchParam]);
-        res.json(rows);
-    } catch (err) {
-        console.error("SQL Error Details:", err);
-        res.status(500).json({ error: "Database query failed" });
-    }
-});
-
-app.get('/api/stock-history/:symbol', async (req, res) => {
-    try {
-        const symbol = req.params.symbol.toUpperCase();
-        const apiKey = process.env.MASSIVE_API_KEY;
-        const url = `https://api.massive.com/v2/aggs/ticker/&ticker=${symbol}/range/1/day/2025-01-01/2026-04-08?adjusted=true&sort=asc&apiKey=${apiKey}`;
-        
-        const response = await axios.get(url);
-        res.json(response.data);
-    } catch (error) {
-        console.error("History API error:", error.message);
-        res.status(500).json({ error: "Error fetching history" });
-    }
-});
-
-// --- 3. PORTFOLIO & TRADES ROUTES ---
 app.get('/api/portfolio/individual', async (req, res) => {
     const username = (req.query.username || '').trim();
     if (!username) {
@@ -321,6 +323,261 @@ app.get('/api/portfolio/individual', async (req, res) => {
 
         let holdingsMarketValue = 0;
         let holdingsCostBasis = 0;
+
+        const holdingsSnapshot = holdings.map((holding) => {
+            const quantity = Number(holding.quantity) || 0;
+            const avgPrice = Number(holding.avgPrice) || 0;
+            const currentPrice = Number(holding.currentPrice) || 0;
+            const marketValue = quantity * currentPrice;
+            const costBasis = quantity * avgPrice;
+
+            holdingsMarketValue += marketValue;
+            holdingsCostBasis += costBasis;
+
+            return {
+                tickerSymbol: holding.tickerSymbol,
+                companyName: holding.companyName,
+                quantity,
+                avgPrice,
+                currentPrice,
+                marketValue,
+                costBasis,
+            };
+        });
+
+        const txSnapshot = transactions.map((tx) => ({
+            transactionID: tx.transactionID,
+            tickerSymbol: tx.tickerSymbol,
+            transactionType: tx.transactionType,
+            quantity: Number(tx.quantity) || 0,
+            pricePerShare: Number(tx.pricePerShare) || 0,
+            totalPrice: Number(tx.totalPrice) || 0,
+            transactionDate: tx.transactionDate,
+            status: Boolean(tx.status),
+        }));
+
+        const cashBalance = Number(portfolio.cashBalance) || 0;
+        const portfolioValue = cashBalance + holdingsMarketValue;
+        const initialCash = 10000;
+        const performancePct = ((portfolioValue - initialCash) / initialCash) * 100;
+
+        return res.json({
+            success: true,
+            portfolio: {
+                portfolioId: portfolio.portfolioID,
+                userId: user.userID,
+                username: user.username,
+                scope: 'individual',
+                createdDate: portfolio.createdDate,
+                cashBalance,
+                currentMarketValue: holdingsMarketValue,
+                holdingsCostBasis,
+                portfolioValue,
+                initialCash,
+                performancePct,
+                holdings: holdingsSnapshot,
+                transactions: txSnapshot,
+            },
+        });
+    } catch (error) {
+        console.error('Individual portfolio fetch error:', error);
+        return res.status(500).json(createError('Unable to load individual portfolio.'));
+    }
+});
+
+app.post('/api/trades', async (req, res) => {
+    const username = (req.body.username || '').trim();
+    const tickerSymbol = (req.body.tickerSymbol || '').trim().toUpperCase();
+    const tradeType = (req.body.tradeType || '').trim();
+    const quantity = parsePositiveInteger(req.body.quantity);
+    const fallbackPrice = parsePositiveNumber(req.body.pricePerShare);
+
+    if (!username || !tickerSymbol || !tradeType || !quantity) {
+        return res.status(400).json(createError('username, tickerSymbol, tradeType, and quantity are required.'));
+    }
+
+    if (tradeType !== 'Buy' && tradeType !== 'Sell') {
+        return res.status(400).json(createError('tradeType must be Buy or Sell.'));
+    }
+
+    let connection;
+
+    try {
+        const [users] = await pool.execute(
+            'SELECT userID, username FROM `User` WHERE username = ?',
+            [username]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json(createError('User not found.'));
+        }
+
+        const user = users[0];
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        let [portfolios] = await connection.execute(
+            `SELECT portfolioID, cashBalance
+             FROM Portfolio
+             WHERE userID = ? AND leagueID IS NULL
+             ORDER BY portfolioID DESC
+             LIMIT 1
+             FOR UPDATE`,
+            [user.userID]
+        );
+
+        if (portfolios.length === 0) {
+            const startingCash = 10000;
+            const [insertPortfolio] = await connection.execute(
+                `INSERT INTO Portfolio (userID, leagueID, cashBalance, portfolioType, createdDate)
+                 VALUES (?, NULL, ?, 'Individual', CURDATE())`,
+                [user.userID, startingCash]
+            );
+
+            portfolios = [{
+                portfolioID: insertPortfolio.insertId,
+                cashBalance: startingCash,
+            }];
+        }
+
+        const portfolio = portfolios[0];
+        const [stocks] = await connection.execute(
+            `SELECT tickerSymbol, currentPrice
+             FROM Stock
+             WHERE UPPER(tickerSymbol) = ?
+             LIMIT 1`,
+            [tickerSymbol]
+        );
+
+        const stockPrice = stocks.length > 0 ? parsePositiveNumber(stocks[0].currentPrice) : null;
+        const pricePerShare = stockPrice || fallbackPrice;
+
+        if (!pricePerShare) {
+            await connection.rollback();
+            return res.status(400).json(createError('No valid price was found for this ticker.'));
+        }
+
+        const cashBalance = Number(portfolio.cashBalance) || 0;
+        const totalPrice = Number((pricePerShare * quantity).toFixed(2));
+
+        if (tradeType === 'Buy') {
+            if (cashBalance < totalPrice) {
+                await connection.rollback();
+                return res.status(400).json(createError('Insufficient buying power for this purchase.'));
+            }
+
+            const updatedCash = Number((cashBalance - totalPrice).toFixed(2));
+            await connection.execute(
+                'UPDATE Portfolio SET cashBalance = ? WHERE portfolioID = ?',
+                [updatedCash, portfolio.portfolioID]
+            );
+
+            const [holdings] = await connection.execute(
+                `SELECT holdingID, quantity, purchasePrice
+                 FROM Holding
+                 WHERE portfolioID = ? AND UPPER(tickerSymbol) = ?
+                 LIMIT 1
+                 FOR UPDATE`,
+                [portfolio.portfolioID, tickerSymbol]
+            );
+
+            if (holdings.length > 0) {
+                const existing = holdings[0];
+                const existingQty = Number(existing.quantity) || 0;
+                const existingAvg = Number(existing.purchasePrice) || 0;
+                const newQty = existingQty + quantity;
+                const newAvg = Number((((existingQty * existingAvg) + totalPrice) / newQty).toFixed(4));
+
+                await connection.execute(
+                    'UPDATE Holding SET quantity = ?, purchasePrice = ? WHERE holdingID = ?',
+                    [newQty, newAvg, existing.holdingID]
+                );
+            } else {
+                await connection.execute(
+                    `INSERT INTO Holding (userID, portfolioID, leagueID, tickerSymbol, quantity, purchasePrice)
+                     VALUES (?, ?, NULL, ?, ?, ?)`,
+                    [user.userID, portfolio.portfolioID, tickerSymbol, quantity, pricePerShare]
+                );
+            }
+        } else {
+            const [holdings] = await connection.execute(
+                `SELECT holdingID, quantity
+                 FROM Holding
+                 WHERE portfolioID = ? AND UPPER(tickerSymbol) = ?
+                 LIMIT 1
+                 FOR UPDATE`,
+                [portfolio.portfolioID, tickerSymbol]
+            );
+
+            if (holdings.length === 0) {
+                await connection.rollback();
+                return res.status(400).json(createError('You do not own this stock.'));
+            }
+
+            const existing = holdings[0];
+            const existingQty = Number(existing.quantity) || 0;
+
+            if (existingQty < quantity) {
+                await connection.rollback();
+                return res.status(400).json(createError('Sell quantity exceeds shares currently held.'));
+            }
+
+            const remainingQty = existingQty - quantity;
+            const updatedCash = Number((cashBalance + totalPrice).toFixed(2));
+
+            await connection.execute(
+                'UPDATE Portfolio SET cashBalance = ? WHERE portfolioID = ?',
+                [updatedCash, portfolio.portfolioID]
+            );
+
+            if (remainingQty === 0) {
+                await connection.execute(
+                    'DELETE FROM Holding WHERE holdingID = ?',
+                    [existing.holdingID]
+                );
+            } else {
+                await connection.execute(
+                    'UPDATE Holding SET quantity = ? WHERE holdingID = ?',
+                    [remainingQty, existing.holdingID]
+                );
+            }
+        }
+
+        await connection.execute(
+            `INSERT INTO Transaction
+             (portfolioID, userID, tickerSymbol, transactionType, quantity, pricePerShare, totalPrice, transactionDate, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE(), TRUE)`,
+            [portfolio.portfolioID, user.userID, tickerSymbol, tradeType, quantity, pricePerShare, totalPrice]
+        );
+
+        await connection.commit();
+
+        return res.status(201).json({
+            success: true,
+            message: `${tradeType} order executed successfully.`,
+            trade: {
+                username: user.username,
+                tickerSymbol,
+                tradeType,
+                quantity,
+                pricePerShare,
+                totalPrice,
+            },
+        });
+    } catch (error) {
+        if (connection) {
+            await connection.rollback();
+        }
+        console.error('Trade execution error:', error);
+        return res.status(500).json(createError('Unable to execute trade at this time.'));
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+});
+
+// --- Catch-all Route ---
 
         const holdingsSnapshot = holdings.map((holding) => {
             const quantity = Number(holding.quantity) || 0;

@@ -223,7 +223,85 @@
                 <input type="text" id="tickerSearch" class="searchInput" placeholder="Search by name or symbol (e.g. AAPL)...">
             </div>
 
-            <div class="tickerGrid" id="tickerGrid">
+            <div class = "summaryGrid" id = "tickerGrid">
+                
+                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html?ticker=AAPL&company=Apple%20Inc.&price=182.63'">
+
+                    <div class = "statLabel">Apple Inc.</div>
+                    <div class = "leagueTitle">AAPL</div>
+                    
+
+                    <div class = "leagueMetric">
+                        <span class = "leagueMetricLabel">Current Price</span>
+                        <span class = "leagueMetricValue">$182.63</span>
+
+                    </div>
+
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Daily Change</span>
+                        <span class = "leagueMetricValue positive">+1.2%</span>
+
+                    </div>
+                </div>
+                
+                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html?ticker=TSLA&company=Tesla%2C%20Inc.&price=202.11'">
+
+                    <div class = "statLabel">Tesla, Inc.</div>
+                    
+                    <div class = "leagueTitle">TSLA</div>
+                    
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Current Price</span>
+                        <span class = "leagueMetricValue">$202.11</span>
+
+                    </div>
+
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Daily Change</span>
+                        <span class = "leagueMetricValue positive">+0.8%</span>
+                    </div>
+                </div>
+                
+                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html?ticker=NVDA&company=NVIDIA%20Corp.&price=726.13'">
+
+                    <div class = "statLabel">NVIDIA Corp.</div>
+                    <div class = "leagueTitle">NVDA</div>
+
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Current Price</span>
+                        <span class = "leagueMetricValue">$726.13</span>
+
+                    </div>
+
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Daily Change</span>
+                        <span class = "leagueMetricValue positive">+3.5%</span>
+
+                    </div>
+                </div>
+
+                <div class = "statCard leagueCard" onclick = "window.location.href = 'detailedTicker.html?ticker=MSFT&company=Microsoft%20Corp.&price=406.32'">
+
+                    <div class = "statLabel">Microsoft Corp.</div>
+                    <div class = "leagueTitle">MSFT</div>
+                    
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Current Price</span>
+                        <span class = "leagueMetricValue">$406.32</span>
+
+                    </div>
+                    <div class = "leagueMetric">
+
+                        <span class = "leagueMetricLabel">Daily Change</span>
+                        <span class = "leagueMetricValue positive">+0.4%</span>
+
+                    </div>
                 </div>
 
             <div id="sentinel">
