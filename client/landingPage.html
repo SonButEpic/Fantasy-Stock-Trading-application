@@ -60,7 +60,6 @@
             align-items: center;
         }
 
-        /* Styles for buttons injected by auth.js */
         .loginButton, .logoutButton {
             background: transparent;
             color: #4b5563;
@@ -96,10 +95,6 @@
             background-color: #1d4ed8;
             transform: translateY(-2px);
             box-shadow: 0 8px 15px -3px rgba(37, 99, 235, 0.25);
-        }
-
-        .buttonSignup:active {
-            transform: translateY(0);
         }
 
         /* --- Layout --- */
@@ -241,15 +236,8 @@
             background-color: #f3f4f6;
         }
 
-        .tickerSymbol {
-            font-weight: 800;
-            color: #111827;
-        }
-
-        .priceOfTicker {
-            font-weight: 700;
-            color: #10b981;
-        }
+        .tickerSymbol { font-weight: 800; color: #111827; }
+        .priceOfTicker { font-weight: 700; color: #10b981; }
 
         /* --- Footer --- */
         footer {
@@ -258,25 +246,19 @@
             padding: 32px;
             text-align: center;
             border-top: 1px solid #374151;
-            position: relative;
-            z-index: 101;
         }
 
-        .footerText {
-            margin: 6px 0;
-            font-size: 14px;
-        }
+        .footerText { margin: 6px 0; font-size: 14px; }
 
-        /* --- Responsive --- */
         @media (max-width: 1024px) {
             .heroCard h1 { font-size: 40px; }
             .trendingBar { width: 260px; }
         }
 
         @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 16px; }
             .pageFixxerUpper { flex-direction: column; }
             .trendingBar { width: 100%; height: auto; position: static; border-left: none; }
-            .mainAreaContainer { padding: 20px; }
             .mainAreaSupreme { flex-direction: column; }
         }
     </style>
@@ -288,6 +270,7 @@
         <div class="navLinks">
             <a href="portfolioPage.html">Portfolio</a>
             <a href="stockTickerPage.html">Tickers</a>
+            <a href="newsPage.html">News</a>
             <a href="leagueSelect.html">Leagues</a>
         </div>
         <div class="AuthenticatorButton"></div>
