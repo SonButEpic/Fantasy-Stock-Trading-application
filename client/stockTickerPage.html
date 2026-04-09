@@ -7,8 +7,8 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'calibri', sans-serif;
+            background-color: #e1e2e2;
             color: #1f2937;
             display: flex;
             flex-direction: column;
@@ -22,19 +22,17 @@
             justify-content: space-between;
             padding: 16px 32px;
             background-color: white;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e6e6e6;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: relative;
+            z-index: 101;
         }
 
         .logo {
             font-size: 24px;
-            font-weight: 800;
+            font-weight: bold;
             color: #2563eb;
             text-decoration: none;
-            letter-spacing: -0.5px;
         }
 
         .navLinks {
@@ -45,7 +43,7 @@
         .navLinks a {
             text-decoration: none;
             color: #4b5563;
-            font-weight: 600;
+            font-weight: 500;
             transition: color 0.2s;
         }
 
@@ -53,11 +51,44 @@
             color: #2563eb;
         }
 
+        /* Login/Logout Buttons styling from your Portfolio context */
+        .AuthenticatorButton {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* These classes should be used inside your auth.js injection logic */
+        .loginButton {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .buttonSignup {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .buttonSignup:hover {
+            background-color: #1d4ed8;
+        }
+
         /* Layout */
         .pageContainer {
             display: flex;
             flex: 1;
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             width: 100%;
         }
@@ -68,62 +99,60 @@
         }
 
         .dashboardHeader h1 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 800;
+            color: #111827;
             margin: 0 0 24px 0;
         }
 
         .dashboardHeader span { color: #2563eb; }
 
-        /* Search Bar */
+        /* Shrink the Search Bar */
         .searchContainer {
             margin-bottom: 32px;
-            position: relative;
+            max-width: 500px; /* Constrains width */
         }
 
         .searchInput {
             width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            padding: 10px 16px; /* Smaller padding */
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            font-size: 15px;
             outline: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .searchInput:focus {
             border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
 
         /* Grid System */
         .tickerGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
         }
 
         .statCard {
-            background: white;
+            background-color: white;
             padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            border: 1px solid #e6e6e6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.2s;
         }
 
         .statCard:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: #2563eb;
+            transform: translateY(-2px);
         }
 
         .companyName {
             font-size: 12px;
-            font-weight: 700;
+            font-weight: bold;
             color: #6b7280;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
             margin-bottom: 4px;
         }
 
@@ -131,59 +160,43 @@
             font-size: 24px;
             font-weight: 800;
             margin-bottom: 12px;
+            color: #111827;
         }
 
-        .priceRow {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f3f4f6;
-            padding-top: 12px;
-        }
-
-        .priceValue { font-weight: 700; font-size: 18px; }
-        .sectorBadge {
-            background: #eff6ff;
-            color: #1e40af;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* Sidebar */
+        /* Sidebar - Styled like your trendingBar */
         .sidebar {
-            width: 300px;
-            background: white;
-            border-left: 1px solid #e5e7eb;
-            padding: 32px 24px;
-            display: none; /* Hidden on small screens */
+            width: 260px;
+            background-color: white;
+            border-left: 1px solid #e6e6e6;
+            padding: 24px;
+            display: none;
         }
 
         @media (min-width: 1024px) { .sidebar { display: block; } }
 
-        .sidebarHeader { font-weight: 800; margin-bottom: 20px; font-size: 18px; }
+        .sidebarHeader {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
 
         .trendingItem {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        /* Sentinel & Loading */
-        #sentinel {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-            grid-column: 1 / -1;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9fafb;
         }
 
         footer {
-            background: #111827;
+            background-color: #111827;
             color: #9ca3af;
-            padding: 32px;
+            padding: 24px 32px;
             text-align: center;
+            border-top: 1px solid #374151;
+            position: relative;
+            z-index: 101;
         }
     </style>
 </head>
@@ -229,6 +242,8 @@
     <footer>
         <p>CP317 Software Engineering — Winter 2026</p>
     </footer>
+
+    <script src="auth.js"></script>
 
     <script>
         let offset = 0;
